@@ -107,4 +107,9 @@
     letter-spacing: var(--tracking-normal);
     @apply bg-background text-foreground antialiased;
   }
+
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
 }
