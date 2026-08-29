@@ -1,3 +1,4 @@
+import { DatePicker } from '@/components/DatePicker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -78,15 +79,12 @@ export function QueryBar({
               <Label htmlFor="day-date" className="text-xs font-medium text-muted-foreground">
                 Date
               </Label>
-              <Input
+              <DatePicker
                 id="day-date"
-                type="date"
-                min="1995-06-16"
-                max={today}
                 value={mode.date}
-                aria-invalid={error?.field === 'date'}
-                className="rounded-md md:w-44"
-                onChange={(event) => onModeChange({ kind: 'day', date: event.target.value })}
+                max={today}
+                invalid={error?.field === 'date'}
+                onChange={(date) => onModeChange({ kind: 'day', date })}
               />
               <Button
                 type="button"
@@ -105,30 +103,24 @@ export function QueryBar({
                 <Label htmlFor="window-start" className="text-xs font-medium text-muted-foreground">
                   Start
                 </Label>
-                <Input
+                <DatePicker
                   id="window-start"
-                  type="date"
-                  min="1995-06-16"
-                  max={today}
                   value={mode.start}
-                  aria-invalid={error?.field === 'start' || error?.field === 'range'}
-                  className="rounded-md md:w-40"
-                  onChange={(event) => onModeChange({ ...mode, start: event.target.value })}
+                  max={today}
+                  invalid={error?.field === 'start' || error?.field === 'range'}
+                  onChange={(start) => onModeChange({ ...mode, start })}
                 />
               </div>
               <div className="flex items-center gap-2">
                 <Label htmlFor="window-end" className="text-xs font-medium text-muted-foreground">
                   End
                 </Label>
-                <Input
+                <DatePicker
                   id="window-end"
-                  type="date"
-                  min="1995-06-16"
-                  max={today}
                   value={mode.end}
-                  aria-invalid={error?.field === 'end' || error?.field === 'range'}
-                  className="rounded-md md:w-40"
-                  onChange={(event) => onModeChange({ ...mode, end: event.target.value })}
+                  max={today}
+                  invalid={error?.field === 'end' || error?.field === 'range'}
+                  onChange={(end) => onModeChange({ ...mode, end })}
                 />
               </div>
               <Button type="button" className="rounded-md" onClick={onShowRange}>
