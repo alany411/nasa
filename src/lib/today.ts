@@ -1,13 +1,15 @@
 export const ARCHIVE_FLOOR = '1995-06-16'
 export const RANGE_DEFAULT_DAYS = 6
 
+const newYorkDate = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/New_York',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+})
+
 export function todayInNewYork(now = new Date()): string {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now)
+  return newYorkDate.format(now)
 }
 
 export function addCalendarDays(isoDate: string, days: number): string {
