@@ -33,10 +33,13 @@
     "valibot": "^1.4.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@rolldown/plugin-babel": "^0.2.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.1.0",
+    "babel-plugin-react-compiler": "^1.0.0",
     "oxfmt": "^0.65.0",
     "oxlint": "^1.79.0",
     "typescript": "~6.0.2",
