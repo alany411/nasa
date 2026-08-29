@@ -22,6 +22,7 @@ type DatePickerProps = {
   max: string
   min?: string
   invalid?: boolean
+  disabled?: boolean
   describedBy?: string
   className?: string
   onChange: (date: string) => void
@@ -33,6 +34,7 @@ export function DatePicker({
   max,
   min = ARCHIVE_FLOOR,
   invalid = false,
+  disabled = false,
   describedBy,
   className,
   onChange,
@@ -43,13 +45,19 @@ export function DatePicker({
   const endMonth = parseIsoDate(max)
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={disabled ? false : open}
+      onOpenChange={(next) => {
+        if (!disabled) setOpen(next)
+      }}
+    >
       <PopoverTrigger
         render={
           <Button
             id={id}
             type="button"
             variant="outline"
+            disabled={disabled}
             aria-invalid={invalid}
             aria-describedby={describedBy}
             className={cn('w-[13.5rem] justify-start rounded-md font-normal', className)}
@@ -101,6 +109,7 @@ type DateRangePickerProps = {
   max: string
   min?: string
   invalid?: boolean
+  disabled?: boolean
   describedBy?: string
   className?: string
   onChange: (range: { start: string; end: string }) => void
@@ -113,6 +122,7 @@ export function DateRangePicker({
   max,
   min = ARCHIVE_FLOOR,
   invalid = false,
+  disabled = false,
   describedBy,
   className,
   onChange,
@@ -133,8 +143,9 @@ export function DateRangePicker({
 
   return (
     <Popover
-      open={open}
+      open={disabled ? false : open}
       onOpenChange={(next) => {
+        if (disabled) return
         setOpen(next)
         setDraft(next ? committed : null)
       }}
@@ -145,6 +156,7 @@ export function DateRangePicker({
             id={id}
             type="button"
             variant="outline"
+            disabled={disabled}
             aria-invalid={invalid}
             aria-describedby={describedBy}
             className={cn('w-[17.5rem] justify-start rounded-md font-normal', className)}

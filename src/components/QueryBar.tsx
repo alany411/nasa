@@ -92,6 +92,7 @@ export function QueryBar({
                 value={mode.date}
                 max={today}
                 invalid={dateInvalid}
+                disabled={busy}
                 describedBy={dateInvalid ? 'day-date-error' : undefined}
                 onChange={(date) => onModeChange({ kind: 'day', date })}
               />
@@ -126,6 +127,7 @@ export function QueryBar({
                 end={mode.end}
                 max={today}
                 invalid={rangeInvalid}
+                disabled={busy}
                 describedBy={rangeInvalid ? 'range-error' : undefined}
                 onChange={(range) => onModeChange({ kind: 'range', ...range })}
               />
@@ -164,6 +166,7 @@ export function QueryBar({
                   min={1}
                   max={SURPRISE_MAX}
                   value={mode.count}
+                  disabled={busy}
                   aria-invalid={countInvalid}
                   aria-describedby={countInvalid ? 'surprise-count-error' : undefined}
                   className="w-20 rounded-md"
