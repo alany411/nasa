@@ -22,6 +22,7 @@ type DatePickerProps = {
   max: string
   min?: string
   invalid?: boolean
+  describedBy?: string
   className?: string
   onChange: (date: string) => void
 }
@@ -32,6 +33,7 @@ export function DatePicker({
   max,
   min = ARCHIVE_FLOOR,
   invalid = false,
+  describedBy,
   className,
   onChange,
 }: DatePickerProps) {
@@ -49,6 +51,7 @@ export function DatePicker({
             type="button"
             variant="outline"
             aria-invalid={invalid}
+            aria-describedby={describedBy}
             className={cn('w-[13.5rem] justify-start rounded-md font-normal', className)}
           />
         }
@@ -98,6 +101,7 @@ type DateRangePickerProps = {
   max: string
   min?: string
   invalid?: boolean
+  describedBy?: string
   className?: string
   onChange: (range: { start: string; end: string }) => void
 }
@@ -109,6 +113,7 @@ export function DateRangePicker({
   max,
   min = ARCHIVE_FLOOR,
   invalid = false,
+  describedBy,
   className,
   onChange,
 }: DateRangePickerProps) {
@@ -141,6 +146,7 @@ export function DateRangePicker({
             type="button"
             variant="outline"
             aria-invalid={invalid}
+            aria-describedby={describedBy}
             className={cn('w-[17.5rem] justify-start rounded-md font-normal', className)}
           />
         }

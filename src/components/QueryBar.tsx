@@ -12,7 +12,6 @@ import {
   type FormError,
   type ViewerMode,
 } from '@/lib/mode'
-import { cn } from '@/lib/utils'
 
 type QueryBarProps = {
   mode: ViewerMode
@@ -37,37 +36,37 @@ export function QueryBar({
   onNextDay,
   today,
 }: QueryBarProps) {
-  return (
-    <div
-      className={cn(
-        'flex flex-col gap-2 rounded-md border bg-card px-3 py-2.5',
-        error ? 'border-destructive' : 'border-border',
-      )}
-    >
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <ToggleGroup
-          value={[mode.kind]}
-          onValueChange={(values) => {
-            const next = values[0]
-            if (next === 'day' || next === 'range' || next === 'surprise') onKindChange(next)
-          }}
-          variant="default"
-          size="sm"
-          className="justify-start"
-        >
-          <ToggleGroupItem value="day" className="rounded-md px-3">
-            Day
-          </ToggleGroupItem>
-          <ToggleGroupItem value="range" className="rounded-md px-3">
-            Range
-          </ToggleGroupItem>
-          <ToggleGroupItem value="surprise" className="rounded-md px-3">
-            Surprise
-          </ToggleGroupItem>
-        </ToggleGroup>
+  const dateInvalid = error?.field === 'date'
+  const rangeInvalid =
+    error?.field === 'start' || error?.field === 'end' || error?.field === 'range'
+  const countInvalid = error?.field === 'count'
 
-        <div className="flex flex-wrap items-center gap-3">
-          {mode.kind === 'day' ? (
+  return (
+    <div className="flex flex-col gap-3 rounded-md border border-border bg-card px-3 py-2.5 md:flex-row md:items-start md:justify-between">
+      <ToggleGroup
+        value={[mode.kind]}
+        onValueChange={(values) => {
+          const next = values[0]
+          if (next === 'day' || next === 'range' || next === 'surprise') onKindChange(next)
+        }}
+        variant="default"
+        size="sm"
+        className="justify-start"
+      >
+        <ToggleGroupItem value="day" className="rounded-md px-3">
+          Day
+        </ToggleGroupItem>
+        <ToggleGroupItem value="range" className="rounded-md px-3">
+          Range
+        </ToggleGroupItem>
+        <ToggleGroupItem value="surprise" className="rounded-md px-3">
+          Surprise
+        </ToggleGroupItem>
+      </ToggleGroup>
+
+      <div className="flex flex-wrap items-start gap-3">
+        {mode.kind === 'day' ? (
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <Button
                 type="button"
@@ -85,7 +84,8 @@ export function QueryBar({
                 id="day-date"
                 value={mode.date}
                 max={today}
-                invalid={error?.field === 'date'}
+                invalid={dateInvalid}
+                describedBy={dateInvalid ? 'day-date-error' : undefined}
                 onChange={(date) => onModeChange({ kind: 'day', date })}
               />
               <Button
@@ -98,39 +98,45 @@ export function QueryBar({
                 <ChevronRight data-icon="inline-end" />
               </Button>
             </div>
-          ) : null}
+            <FieldError id="day-date-error" message={dateInvalid ? error?.message : undefined} />
+          </div>
+        ) : null}
 
-          {mode.kind === 'range' ? (
-            <>
-              <div className="flex items-center gap-2">
-                <Label htmlFor="range-dates" className="sr-only">
-                  Range
-                </Label>
-                <DateRangePicker
-                  id="range-dates"
-                  start={mode.start}
-                  end={mode.end}
-                  max={today}
-                  invalid={
-                    error?.field === 'start' || error?.field === 'end' || error?.field === 'range'
-                  }
-                  onChange={(range) => onModeChange({ kind: 'range', ...range })}
-                />
-              </div>
-              <Button
-                type="button"
-                className="rounded-md"
-                disabled={Boolean(error)}
-                onClick={onShowRange}
-              >
-                <CalendarRange data-icon="inline-start" />
-                Show
-              </Button>
-            </>
-          ) : null}
+        {mode.kind === 'range' ? (
+          <>
+            <div className="flex flex-col gap-1">
+              <Label htmlFor="range-dates" className="sr-only">
+                Range
+              </Label>
+              <DateRangePicker
+                id="range-dates"
+                start={mode.start}
+                end={mode.end}
+                max={today}
+                invalid={rangeInvalid}
+                describedBy={rangeInvalid ? 'range-error' : undefined}
+                onChange={(range) => onModeChange({ kind: 'range', ...range })}
+              />
+              <FieldError
+                id="range-error"
+                message={rangeInvalid ? error?.message : undefined}
+              />
+            </div>
+            <Button
+              type="button"
+              className="rounded-md"
+              disabled={Boolean(error)}
+              onClick={onShowRange}
+            >
+              <CalendarRange data-icon="inline-start" />
+              Show
+            </Button>
+          </>
+        ) : null}
 
-          {mode.kind === 'surprise' ? (
-            <>
+        {mode.kind === 'surprise' ? (
+          <>
+            <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Label htmlFor="surprise-count" className="text-xs font-medium text-muted-foreground">
                   Count
@@ -141,7 +147,8 @@ export function QueryBar({
                   min={1}
                   max={SURPRISE_MAX}
                   value={mode.count}
-                  aria-invalid={error?.field === 'count'}
+                  aria-invalid={countInvalid}
+                  aria-describedby={countInvalid ? 'surprise-count-error' : undefined}
                   className="w-20 rounded-md"
                   onChange={(event) =>
                     onModeChange({
@@ -151,21 +158,32 @@ export function QueryBar({
                   }
                 />
               </div>
-              <Button
-                type="button"
-                className="rounded-md"
-                disabled={Boolean(error)}
-                onClick={onSurprise}
-              >
-                <Sparkles data-icon="inline-start" />
-                Surprise
-              </Button>
-            </>
-          ) : null}
-        </div>
+              <FieldError
+                id="surprise-count-error"
+                message={countInvalid ? error?.message : undefined}
+              />
+            </div>
+            <Button
+              type="button"
+              className="rounded-md"
+              disabled={Boolean(error)}
+              onClick={onSurprise}
+            >
+              <Sparkles data-icon="inline-start" />
+              Surprise
+            </Button>
+          </>
+        ) : null}
       </div>
-
-      {error ? <p className="text-xs text-destructive">{error.message}</p> : null}
     </div>
+  )
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null
+  return (
+    <p id={id} role="alert" className="text-xs text-destructive">
+      {message}
+    </p>
   )
 }
