@@ -62,7 +62,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
       >
         <p className="min-w-0 truncate text-xs text-white/80">{note}</p>
         <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
-          Read more
+          Briefing
         </span>
       </div>
     </button>
