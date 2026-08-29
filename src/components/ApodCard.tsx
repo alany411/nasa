@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react'
+import { ImageIcon, Info, Video } from 'lucide-react'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Apod } from '@/lib/apod'
@@ -22,6 +22,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
 
   const thumb = apod.mediaType === 'video' ? (apod.thumbnailUrl ?? apod.url) : apod.url
   const kind = apod.mediaType === 'video' ? 'Video' : apod.mediaType === 'image' ? 'Image' : 'Other'
+  const KindIcon = apod.mediaType === 'video' ? Video : ImageIcon
   const Title = hero ? 'h1' : 'h2'
 
   return (
@@ -48,8 +49,18 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
         >
           {apod.title}
         </Title>
-        <p className={cn('text-white/85', hero ? 'text-sm' : 'text-xs')}>
-          {formatDisplayDate(apod.date)} / {kind}
+        <p
+          className={cn(
+            'inline-flex items-center gap-1.5 text-white/85',
+            hero ? 'text-sm' : 'text-xs',
+          )}
+        >
+          {formatDisplayDate(apod.date)}
+          <span aria-hidden>·</span>
+          <span className="inline-flex items-center gap-1">
+            <KindIcon className={hero ? 'size-3.5' : 'size-3'} />
+            {kind}
+          </span>
         </p>
       </div>
       <div
