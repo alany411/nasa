@@ -2,6 +2,7 @@ import ky, { isHTTPError, isTimeoutError } from 'ky'
 import * as v from 'valibot'
 
 import { parseApods, type Apod } from '@/lib/apod'
+import type { DateSpan } from '@/lib/today'
 
 const apod = ky.create({
   prefix: 'https://api.nasa.gov',
@@ -116,12 +117,8 @@ export async function fetchDay(date: string, options?: RequestOptions): Promise<
   return first
 }
 
-export async function fetchRange(
-  start: string,
-  end: string,
-  options?: RequestOptions,
-): Promise<Apod[]> {
-  return readApods(await request({ start_date: start, end_date: end }, options))
+export async function fetchRange(range: DateSpan, options?: RequestOptions): Promise<Apod[]> {
+  return readApods(await request({ start_date: range.start, end_date: range.end }, options))
 }
 
 export async function fetchSurprise(count: number, options?: RequestOptions): Promise<Apod[]> {

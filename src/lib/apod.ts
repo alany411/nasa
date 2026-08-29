@@ -49,16 +49,8 @@ export type Apod = {
   | { mediaType: 'other'; url: string }
 )
 
-export type MediaKind = Apod['mediaType']
-
 export function parseApods(input: unknown): Apod[] {
   const result = v.safeParse(nasaApodsSchema, input)
   if (!result.success) throw new Error('NASA returned an unexpected APOD.')
   return Array.isArray(result.output) ? result.output : [result.output]
-}
-
-export function parseApod(input: unknown): Apod {
-  const apod = parseApods(input)[0]
-  if (!apod) throw new Error('NASA returned no APOD.')
-  return apod
 }

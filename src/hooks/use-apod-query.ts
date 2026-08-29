@@ -50,8 +50,8 @@ export function useDayApod(date: string | null, today: string) {
 
 export function useRangeApods(range: DateSpan) {
   return useQuery<Apod[], ApodRequestError>({
-    queryKey: apodKeys.range(range.start, range.end),
-    queryFn: ({ signal }) => fetchRange(range.start, range.end, { signal }),
+    queryKey: apodKeys.range(range),
+    queryFn: ({ signal }) => fetchRange(range, { signal }),
     staleTime: Infinity,
   })
 }
