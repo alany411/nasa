@@ -48,18 +48,20 @@ export function useDayApod(date: string | null, today: string) {
   })
 }
 
-export function useRangeApods(range: DateSpan) {
+export function useRangeApods(range: DateSpan, enabled = true) {
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.range(range),
     queryFn: ({ signal }) => fetchRange(range, { signal }),
     staleTime: Infinity,
+    enabled,
   })
 }
 
-export function useSurpriseApods(count: number) {
+export function useSurpriseApods(count: number, enabled = true) {
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.surprise(count),
     queryFn: ({ signal }) => fetchSurprise(count, { signal }),
     staleTime: Infinity,
+    enabled,
   })
 }

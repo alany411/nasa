@@ -43,8 +43,8 @@ export default function App() {
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
   const dayQuery = useDayApod(dayDate, clockToday)
-  const rangeQuery = useRangeApods(shownRange)
-  const surpriseQuery = useSurpriseApods(shownSurprise)
+  const rangeQuery = useRangeApods(shownRange, mode.kind === 'range')
+  const surpriseQuery = useSurpriseApods(shownSurprise, mode.kind === 'surprise')
   const activeQuery =
     mode.kind === 'day' ? dayQuery : mode.kind === 'range' ? rangeQuery : surpriseQuery
   const requestError =
