@@ -32,8 +32,8 @@ export function MediaStage({
   const poster = apod.thumbnailUrl ?? apod.url
 
   return (
-    <div className={cn('flex flex-col gap-2.5', dimmed && 'opacity-40', className)}>
-      <div className="relative overflow-hidden rounded-md bg-muted">
+    <div className={cn('flex min-h-0 flex-col gap-2.5', dimmed && 'opacity-40', className)}>
+      <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-md bg-muted">
         {mediaFailed ? (
           <div className="flex min-h-40 flex-col items-center justify-center gap-1 px-6 py-10 text-center">
             <p className="text-sm font-semibold text-primary">Media failed to load</p>

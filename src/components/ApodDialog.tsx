@@ -62,15 +62,15 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
               </DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:overflow-hidden">
-              <div className="flex flex-col gap-4 md:h-full md:min-h-0 md:flex-row md:items-start md:gap-6">
+              <div className="flex min-h-0 flex-col gap-4 md:h-full md:flex-row md:items-stretch md:gap-6">
                 <MediaStage
                   key={`${apod.date}-${apod.url}`}
                   apod={apod}
                   loading={false}
-                  className="min-w-0 md:w-1/2 md:shrink-0"
-                  mediaClassName="md:max-h-[min(56dvh,100%)]"
+                  className="min-h-0 min-w-0 md:h-full md:w-1/2"
+                  mediaClassName="max-h-[min(70dvh,calc(90dvh-12.5rem))]"
                 />
-                <p className="min-h-0 font-serif text-base leading-7 md:flex-1 md:overflow-y-auto">
+                <p className="min-h-0 font-serif text-base leading-7 md:h-full md:flex-1 md:overflow-y-auto">
                   {apod.explanation}
                 </p>
               </div>
