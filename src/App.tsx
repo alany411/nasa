@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ApodDialog } from '@/components/ApodDialog'
 import { AppHeader } from '@/components/AppHeader'
@@ -39,7 +39,7 @@ export default function App() {
     }
   }, [])
 
-  const formError = useMemo(() => validateMode(mode, today), [mode, today])
+  const formError = validateMode(mode, today)
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
   const dayQuery = useDayApod(dayDate, clockToday)
