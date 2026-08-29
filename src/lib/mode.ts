@@ -7,11 +7,12 @@ import {
   defaultRange,
   inclusiveDayCount,
   todayInNewYork,
+  RANGE_DEFAULT_DAYS,
 } from '@/lib/today'
 
 export const SURPRISE_DEFAULT = 6
 export const SURPRISE_MAX = 12
-export const RANGE_MAX_DAYS = 7
+export const RANGE_MAX_DAYS = 30
 
 export type DayMode = { kind: 'day'; date: string }
 export type RangeMode = { kind: 'range'; start: string; end: string }
@@ -107,7 +108,7 @@ export function validateMode(mode: ViewerMode, today = todayInNewYork()): FormEr
 export function rememberedDefaults(kind: ViewerMode['kind'], today = todayInNewYork()): ViewerMode {
   if (kind === 'day') return { kind: 'day', date: today }
   if (kind === 'range') {
-    const { start, end } = defaultRange(today)
+    const { start, end } = defaultRange(today, RANGE_DEFAULT_DAYS)
     return { kind: 'range', start, end }
   }
   return { kind: 'surprise', count: SURPRISE_DEFAULT }

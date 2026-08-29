@@ -1,4 +1,5 @@
 export const ARCHIVE_FLOOR = '1995-06-16'
+export const RANGE_DEFAULT_DAYS = 6
 
 export function todayInNewYork(now = new Date()): string {
   return new Intl.DateTimeFormat('en-CA', {
@@ -26,8 +27,11 @@ export function clampToArchive(isoDate: string, ceiling = todayInNewYork()): str
   return isoDate
 }
 
-export function defaultRange(ceiling = todayInNewYork()): { start: string; end: string } {
-  const start = clampToArchive(addCalendarDays(ceiling, -6), ceiling)
+export function defaultRange(
+  ceiling = todayInNewYork(),
+  days = RANGE_DEFAULT_DAYS,
+): { start: string; end: string } {
+  const start = clampToArchive(addCalendarDays(ceiling, 1 - days), ceiling)
   return { start, end: ceiling }
 }
 
