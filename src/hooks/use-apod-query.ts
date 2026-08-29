@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { Apod } from '@/lib/apod'
 import { ApodRequestError, fetchDay, fetchSurprise, fetchRange } from '@/lib/client'
@@ -33,7 +33,6 @@ export function useDayApod(date: string | null, today: string) {
       }),
     enabled: Boolean(date),
     staleTime: Infinity,
-    placeholderData: keepPreviousData,
   })
 }
 
