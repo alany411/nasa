@@ -25,7 +25,6 @@ export function RangeStrip({
     <section className="flex flex-col gap-4">
       <p className="text-[13px] font-medium text-primary">
         {formatDisplayDate(start)} → {formatDisplayDate(end)} · {expectedCount} APODs in date order
-        · click a card to read it
       </p>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {loading

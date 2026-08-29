@@ -14,7 +14,7 @@ export function SurpriseGrid({ items, loading, expectedCount, onOpen }: Surprise
   return (
     <section className="flex flex-col gap-4">
       <p className="text-[13px] font-medium text-primary">
-        {expectedCount} random APODs · not sorted by date · click a card to read it
+        {expectedCount} random APODs · not sorted by date
       </p>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {loading
