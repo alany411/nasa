@@ -10,10 +10,13 @@ import { RangeStrip } from '@/components/RangeStrip'
 import type { Apod } from '@/lib/apod'
 import { useDayApod, useSurpriseApods, useRangeApods } from '@/hooks/use-apod-query'
 import {
+  defaultMemory,
+  rememberMode,
   rememberedDefaults,
   SURPRISE_DEFAULT,
   stepDay,
   validateMode,
+  type ModeMemory,
   type ViewerMode,
 } from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
@@ -24,11 +27,7 @@ export default function App() {
   const queryClient = useQueryClient()
   const [today, setToday] = useState(clockToday)
   const [mode, setMode] = useState<ViewerMode>(() => rememberedDefaults('day', clockToday))
-  const [memory, setMemory] = useState<Record<ViewerMode['kind'], ViewerMode>>(() => ({
-    day: rememberedDefaults('day', clockToday),
-    range: rememberedDefaults('range', clockToday),
-    surprise: rememberedDefaults('surprise', clockToday),
-  }))
+  const [memory, setMemory] = useState<ModeMemory>(() => defaultMemory(clockToday))
   const [shownRange, setShownRange] = useState(() => defaultRange(clockToday))
   const [shownSurprise, setShownSurprise] = useState(SURPRISE_DEFAULT)
   const [opened, setOpened] = useState<{ items: Apod[]; index: number } | null>(null)
@@ -54,10 +53,7 @@ export default function App() {
   ) {
     const resolved = dayQuery.data.date
     const next = { kind: 'day' as const, date: resolved }
-    const range = clampRange(
-      memory.range.kind === 'range' ? memory.range : defaultRange(resolved),
-      resolved,
-    )
+    const range = clampRange(memory.range, resolved)
     setToday(resolved)
     setMode(next)
     setMemory((current) => ({
@@ -71,12 +67,12 @@ export default function App() {
 
   function remember(next: ViewerMode) {
     setMode(next)
-    setMemory((current) => ({ ...current, [next.kind]: next }))
+    setMemory((current) => rememberMode(current, next))
     setOpened(null)
   }
 
   function onKindChange(kind: ViewerMode['kind']) {
-    remember(memory[kind] ?? rememberedDefaults(kind, today))
+    remember(memory[kind])
   }
 
   function openApod(apod: Apod, items: Apod[]) {

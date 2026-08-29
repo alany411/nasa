@@ -1,6 +1,8 @@
 export const ARCHIVE_FLOOR = '1995-06-16'
 export const RANGE_DEFAULT_DAYS = 6
 
+export type DateSpan = { start: string; end: string }
+
 const newYorkDate = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'America/New_York',
   year: 'numeric',
@@ -29,18 +31,12 @@ export function clampToArchive(isoDate: string, ceiling = todayInNewYork()): str
   return isoDate
 }
 
-export function defaultRange(
-  ceiling = todayInNewYork(),
-  days = RANGE_DEFAULT_DAYS,
-): { start: string; end: string } {
+export function defaultRange(ceiling = todayInNewYork(), days = RANGE_DEFAULT_DAYS): DateSpan {
   const start = clampToArchive(addCalendarDays(ceiling, 1 - days), ceiling)
   return { start, end: ceiling }
 }
 
-export function clampRange(
-  range: { start: string; end: string },
-  ceiling = todayInNewYork(),
-): { start: string; end: string } {
+export function clampRange(range: DateSpan, ceiling = todayInNewYork()): DateSpan {
   const end = clampToArchive(range.end, ceiling)
   const start = clampToArchive(range.start, ceiling)
   if (compareIsoDates(start, end) > 0) return defaultRange(ceiling)

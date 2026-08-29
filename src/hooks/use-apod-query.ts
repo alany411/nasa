@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { Apod } from '@/lib/apod'
 import { ApodRequestError, fetchDay, fetchSurprise, fetchRange } from '@/lib/client'
 import { apodKeys } from '@/lib/query'
-import { addCalendarDays } from '@/lib/today'
+import { addCalendarDays, type DateSpan } from '@/lib/today'
 
 async function fetchDayOrYesterday(
   date: string,
@@ -31,22 +31,24 @@ async function fetchDayOrYesterday(
 export function useDayApod(date: string | null, today: string) {
   const queryClient = useQueryClient()
   return useQuery<Apod, ApodRequestError>({
-    queryKey: apodKeys.day(date ?? ''),
-    queryFn: ({ signal }) =>
-      fetchDayOrYesterday(
-        date!,
+    queryKey: apodKeys.day(date),
+    queryFn: ({ signal }) => {
+      if (date === null) throw new ApodRequestError('No APOD for this date.', 404, 'not-found')
+      return fetchDayOrYesterday(
+        date,
         today,
         (resolved, apod) => {
           queryClient.setQueryData(apodKeys.day(resolved), apod)
         },
         signal,
-      ),
-    enabled: Boolean(date),
+      )
+    },
+    enabled: date !== null,
     staleTime: Infinity,
   })
 }
 
-export function useRangeApods(range: { start: string; end: string }) {
+export function useRangeApods(range: DateSpan) {
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.range(range.start, range.end),
     queryFn: ({ signal }) => fetchRange(range.start, range.end, { signal }),

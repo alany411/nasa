@@ -13,6 +13,7 @@ import {
   formatDisplayDate,
   parseIsoDate,
   toIsoDate,
+  type DateSpan,
 } from '@/lib/today'
 import { cn } from '@/lib/utils'
 
@@ -112,7 +113,7 @@ type DateRangePickerProps = {
   disabled?: boolean
   describedBy?: string
   className?: string
-  onChange: (range: { start: string; end: string }) => void
+  onChange: (range: DateSpan) => void
 }
 
 export function DateRangePicker({

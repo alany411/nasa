@@ -1,4 +1,5 @@
 import ky, { isHTTPError, isTimeoutError } from 'ky'
+import * as v from 'valibot'
 
 import { parseApods, type Apod } from '@/lib/apod'
 
@@ -37,27 +38,38 @@ function classify(status: number): ApodRequestError['code'] {
   return 'unknown'
 }
 
+const nasaErrorSchema = v.union([
+  v.object({
+    error: v.object({
+      code: v.optional(v.string()),
+      message: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    }),
+  }),
+  v.object({
+    msg: v.pipe(v.string(), v.trim(), v.minLength(1)),
+  }),
+])
+
 function classifyNasaCode(code: string | undefined): ApodRequestError['code'] | null {
   if (code === 'API_KEY_INVALID') return 'forbidden'
   if (code === 'OVER_RATE_LIMIT') return 'rate-limited'
   return null
 }
 
-function nasaMessage(data: unknown, status: number): string {
-  const fallback = `NASA returned ${status}.`
-  if (!data || typeof data !== 'object') return fallback
-  const body = data as { msg?: string; error?: { message?: string } }
-  return body.msg ?? body.error?.message ?? fallback
-}
-
 function fromHttpError(error: { data: unknown; response: { status: number } }): ApodRequestError {
   const status = error.response.status
-  const data = error.data
-  const nasaCode =
-    data && typeof data === 'object' && 'error' in data
-      ? classifyNasaCode((data as { error?: { code?: string } }).error?.code)
-      : null
-  return new ApodRequestError(nasaMessage(data, status), status, nasaCode ?? classify(status))
+  const parsed = v.safeParse(nasaErrorSchema, error.data)
+  if (!parsed.success) {
+    return new ApodRequestError(`NASA returned ${status}.`, status, classify(status))
+  }
+  if ('error' in parsed.output) {
+    return new ApodRequestError(
+      parsed.output.error.message,
+      status,
+      classifyNasaCode(parsed.output.error.code) ?? classify(status),
+    )
+  }
+  return new ApodRequestError(parsed.output.msg, status, classify(status))
 }
 
 function isAbortError(error: unknown): boolean {

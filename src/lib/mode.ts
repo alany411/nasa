@@ -8,6 +8,7 @@ import {
   inclusiveDayCount,
   todayInNewYork,
   RANGE_DEFAULT_DAYS,
+  type DateSpan,
 } from '@/lib/today'
 
 export const SURPRISE_DEFAULT = 6
@@ -15,9 +16,15 @@ export const SURPRISE_MAX = 12
 export const RANGE_MAX_DAYS = 30
 
 export type DayMode = { kind: 'day'; date: string }
-export type RangeMode = { kind: 'range'; start: string; end: string }
+export type RangeMode = { kind: 'range' } & DateSpan
 export type SurpriseMode = { kind: 'surprise'; count: number }
 export type ViewerMode = DayMode | RangeMode | SurpriseMode
+
+export type ModeMemory = {
+  day: DayMode
+  range: RangeMode
+  surprise: SurpriseMode
+}
 
 export type FormError = {
   field: 'date' | 'start' | 'end' | 'count' | 'range'
@@ -105,6 +112,9 @@ export function validateMode(mode: ViewerMode, today = todayInNewYork()): FormEr
   return formErrorFromIssue(issue, mode.kind)
 }
 
+export function rememberedDefaults(kind: 'day', today?: string): DayMode
+export function rememberedDefaults(kind: 'range', today?: string): RangeMode
+export function rememberedDefaults(kind: 'surprise', today?: string): SurpriseMode
 export function rememberedDefaults(kind: ViewerMode['kind'], today = todayInNewYork()): ViewerMode {
   if (kind === 'day') return { kind: 'day', date: today }
   if (kind === 'range') {
@@ -112,6 +122,20 @@ export function rememberedDefaults(kind: ViewerMode['kind'], today = todayInNewY
     return { kind: 'range', start, end }
   }
   return { kind: 'surprise', count: SURPRISE_DEFAULT }
+}
+
+export function defaultMemory(today = todayInNewYork()): ModeMemory {
+  return {
+    day: rememberedDefaults('day', today),
+    range: rememberedDefaults('range', today),
+    surprise: rememberedDefaults('surprise', today),
+  }
+}
+
+export function rememberMode(memory: ModeMemory, next: ViewerMode): ModeMemory {
+  if (next.kind === 'day') return { ...memory, day: next }
+  if (next.kind === 'range') return { ...memory, range: next }
+  return { ...memory, surprise: next }
 }
 
 export function canStepPrevious(date: string): boolean {

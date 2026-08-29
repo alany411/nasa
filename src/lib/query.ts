@@ -10,7 +10,7 @@ export const queryClient = new QueryClient({
 })
 
 export const apodKeys = {
-  day: (date: string) => ['apod', 'day', date] as const,
+  day: (date: string | null) => ['apod', 'day', date] as const,
   range: (start: string, end: string) => ['apod', 'range', start, end] as const,
   surprise: (count: number) => ['apod', 'surprise', count] as const,
 }
