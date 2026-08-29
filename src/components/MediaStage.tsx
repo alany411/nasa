@@ -15,7 +15,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
   const [mediaFailed, setMediaFailed] = useState(false)
 
   if (loading && !apod) {
-    return <Skeleton className="aspect-[4/3] w-full rounded-md md:min-h-[28rem]" />
+    return <Skeleton className="aspect-video w-full rounded-md" />
   }
 
   if (!apod) return null
@@ -27,14 +27,14 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
     <div className={cn('flex flex-col gap-2.5', dimmed && 'opacity-40')}>
       <div className="relative overflow-hidden rounded-md bg-muted">
         {mediaFailed ? (
-          <div className="flex aspect-[4/3] min-h-60 flex-col items-center justify-center gap-1 px-6 text-center md:min-h-[28rem]">
+          <div className="flex min-h-40 flex-col items-center justify-center gap-1 px-6 py-10 text-center">
             <p className="text-sm font-semibold text-primary">Media failed to load</p>
             <p className="text-xs text-muted-foreground">
               The explanation stays. Retry the file, not the day.
             </p>
           </div>
         ) : embed ? (
-          <div className="relative aspect-[4/3] md:min-h-[28rem]">
+          <div className="relative aspect-video w-full">
             <span className="absolute top-4 left-4 z-10 rounded-md bg-card px-2.5 py-1 text-xs font-semibold tracking-wide text-primary">
               VIDEO
             </span>
@@ -47,11 +47,11 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
             />
           </div>
         ) : apod.mediaType === 'video' ? (
-          <a href={apod.url} target="_blank" rel="noreferrer" className="block">
+          <a href={apod.url} target="_blank" rel="noreferrer" className="relative block">
             <img
               src={poster}
               alt=""
-              className="aspect-[4/3] w-full object-cover md:min-h-[28rem]"
+              className="mx-auto max-h-[70dvh] w-auto max-w-full object-contain"
               onError={() => setMediaFailed(true)}
             />
             <span className="absolute top-4 left-4 rounded-md bg-card px-2.5 py-1 text-xs font-semibold text-primary">
@@ -62,7 +62,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
           <img
             src={apod.url}
             alt={apod.title}
-            className="aspect-[4/3] w-full object-cover md:min-h-[28rem]"
+            className="mx-auto max-h-[70dvh] w-auto max-w-full object-contain"
             onError={() => setMediaFailed(true)}
           />
         )}

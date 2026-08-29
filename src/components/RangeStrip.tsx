@@ -8,7 +8,7 @@ type RangeStripProps = {
   items: Apod[]
   loading: boolean
   expectedCount: number
-  onOpen: (date: string) => void
+  onOpen: (apod: Apod, items: Apod[]) => void
 }
 
 export function RangeStrip({
@@ -25,12 +25,14 @@ export function RangeStrip({
     <section className="flex flex-col gap-4">
       <p className="text-[13px] font-medium text-primary">
         {formatDisplayDate(start)} → {formatDisplayDate(end)} · {expectedCount} APODs in date order
-        · click a card to open that Day
+        · click a card to read it
       </p>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-7">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {loading
           ? placeholders.map((key) => <ApodCard key={key} loading />)
-          : items.map((apod) => <ApodCard key={apod.date} apod={apod} onOpen={onOpen} />)}
+          : items.map((apod) => (
+              <ApodCard key={apod.date} apod={apod} onOpen={(item) => onOpen(item, items)} />
+            ))}
       </div>
     </section>
   )

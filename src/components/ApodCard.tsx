@@ -1,4 +1,3 @@
-import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Apod } from '@/lib/apod'
 import { formatDisplayDate } from '@/lib/today'
@@ -7,40 +6,65 @@ import { cn } from '@/lib/utils'
 type ApodCardProps = {
   apod?: Apod
   loading?: boolean
-  onOpen?: (date: string) => void
+  size?: 'hero' | 'grid'
+  onOpen?: (apod: Apod) => void
 }
 
-export function ApodCard({ apod, loading = false, onOpen }: ApodCardProps) {
+export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodCardProps) {
+  const hero = size === 'hero'
+  const frame = hero ? 'aspect-[4/5] md:aspect-[16/10] md:min-h-[28rem]' : 'aspect-[3/4]'
+
   if (loading || !apod) {
-    return (
-      <Card size="sm" className="rounded-md ring-border">
-        <Skeleton className="aspect-[3/2] w-full rounded-none" />
-        <CardContent className="gap-1 px-2.5 pt-2 pb-3">
-          <Skeleton className="h-3 w-16" />
-          <Skeleton className="h-4 w-28" />
-        </CardContent>
-      </Card>
-    )
+    return <Skeleton className={cn('w-full rounded-xl', frame)} />
   }
 
   const thumb = apod.mediaType === 'video' ? (apod.thumbnailUrl ?? apod.url) : apod.url
+  const note = apod.copyright
+    ? `Copyright · ${apod.copyright}`
+    : apod.mediaType === 'video'
+      ? 'Video'
+      : null
+  const Title = hero ? 'h1' : 'h2'
 
   return (
-    <button type="button" className="text-left" onClick={() => onOpen?.(apod.date)}>
-      <Card size="sm" className="rounded-md ring-border transition-colors hover:bg-accent/40">
-        <div className="relative aspect-[3/2] overflow-hidden bg-muted">
-          <img src={thumb} alt="" className="h-full w-full object-cover" />
-          {apod.mediaType === 'video' ? (
-            <span className="absolute top-2 left-2 rounded-md bg-card px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-primary">
-              VIDEO
-            </span>
-          ) : null}
-        </div>
-        <CardContent className={cn('gap-1 px-2.5 pt-2 pb-3')}>
-          <p className="text-xs text-primary">{formatDisplayDate(apod.date)}</p>
-          <p className="font-heading text-base leading-5">{apod.title}</p>
-        </CardContent>
-      </Card>
+    <button
+      type="button"
+      className={cn(
+        'relative block w-full overflow-hidden rounded-xl text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+        frame,
+      )}
+      onClick={() => onOpen?.(apod)}
+    >
+      <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      <div
+        className={cn(
+          'absolute inset-x-0 top-0 flex flex-col gap-1 bg-gradient-to-b from-black/80 via-black/45 to-transparent',
+          hero ? 'px-5 pt-5 pb-16 md:px-7 md:pt-7 md:pb-20' : 'px-4 pt-4 pb-12',
+        )}
+      >
+        <Title
+          className={cn(
+            'font-heading text-balance text-white',
+            hero ? 'text-3xl leading-tight md:text-5xl' : 'text-lg leading-6',
+          )}
+        >
+          {apod.title}
+        </Title>
+        <p className={cn('text-white/85', hero ? 'text-sm' : 'text-xs')}>
+          {formatDisplayDate(apod.date)}
+        </p>
+      </div>
+      <div
+        className={cn(
+          'absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 via-black/45 to-transparent',
+          hero ? 'px-5 pt-16 pb-5 md:px-7 md:pt-20 md:pb-7' : 'px-4 pt-12 pb-4',
+        )}
+      >
+        <p className="min-w-0 truncate text-xs text-white/80">{note}</p>
+        <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
+          Read more
+        </span>
+      </div>
     </button>
   )
 }
