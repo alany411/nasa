@@ -12,7 +12,6 @@ import {
   type FormError,
   type ViewerMode,
 } from '@/lib/mode'
-import { todayInNewYork } from '@/lib/today'
 import { cn } from '@/lib/utils'
 
 type QueryBarProps = {
@@ -24,6 +23,7 @@ type QueryBarProps = {
   onSurprise: () => void
   onPreviousDay: () => void
   onNextDay: () => void
+  today: string
 }
 
 export function QueryBar({
@@ -35,9 +35,8 @@ export function QueryBar({
   onSurprise,
   onPreviousDay,
   onNextDay,
+  today,
 }: QueryBarProps) {
-  const today = todayInNewYork()
-
   return (
     <div
       className={cn(

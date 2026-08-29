@@ -43,7 +43,7 @@ export function MediaStage({
               </p>
             </div>
           ) : embed ? (
-            <div className="relative aspect-video w-full">
+            <div className={cn('relative aspect-video w-full', mediaClassName)}>
               <span className="absolute top-4 left-4 z-10 rounded-md bg-card px-2.5 py-1 text-xs font-semibold tracking-wide text-primary">
                 VIDEO
               </span>

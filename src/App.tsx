@@ -17,18 +17,19 @@ import {
   type ViewerMode,
 } from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
-import { defaultRange, inclusiveDayCount, todayInNewYork } from '@/lib/today'
+import { clampRange, defaultRange, inclusiveDayCount, todayInNewYork } from '@/lib/today'
 
 export default function App() {
-  const today = todayInNewYork()
+  const clockToday = todayInNewYork()
   const queryClient = useQueryClient()
-  const [mode, setMode] = useState<ViewerMode>(() => rememberedDefaults('day', today))
+  const [today, setToday] = useState(clockToday)
+  const [mode, setMode] = useState<ViewerMode>(() => rememberedDefaults('day', clockToday))
   const [memory, setMemory] = useState<Record<ViewerMode['kind'], ViewerMode>>(() => ({
-    day: rememberedDefaults('day', today),
-    range: rememberedDefaults('range', today),
-    surprise: rememberedDefaults('surprise', today),
+    day: rememberedDefaults('day', clockToday),
+    range: rememberedDefaults('range', clockToday),
+    surprise: rememberedDefaults('surprise', clockToday),
   }))
-  const [shownRange, setShownRange] = useState(() => defaultRange(today))
+  const [shownRange, setShownRange] = useState(() => defaultRange(clockToday))
   const [shownSurprise, setShownSurprise] = useState(SURPRISE_DEFAULT)
   const [opened, setOpened] = useState<{ items: Apod[]; index: number } | null>(null)
 
@@ -41,14 +42,30 @@ export default function App() {
   const formError = useMemo(() => validateMode(mode, today), [mode, today])
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
-  const dayQuery = useDayApod(dayDate, today)
+  const dayQuery = useDayApod(dayDate, clockToday)
   const rangeQuery = useRangeApods(shownRange)
   const surpriseQuery = useSurpriseApods(shownSurprise)
 
-  if (mode.kind === 'day' && mode.date === today && dayQuery.data && dayQuery.data.date !== today) {
-    const next = { kind: 'day' as const, date: dayQuery.data.date }
+  if (
+    mode.kind === 'day' &&
+    mode.date === clockToday &&
+    dayQuery.data &&
+    dayQuery.data.date !== clockToday
+  ) {
+    const resolved = dayQuery.data.date
+    const next = { kind: 'day' as const, date: resolved }
+    const range = clampRange(
+      memory.range.kind === 'range' ? memory.range : defaultRange(resolved),
+      resolved,
+    )
+    setToday(resolved)
     setMode(next)
-    setMemory((current) => ({ ...current, day: next }))
+    setMemory((current) => ({
+      ...current,
+      day: next,
+      range: { kind: 'range', ...range },
+    }))
+    setShownRange((current) => clampRange(current, resolved))
     setOpened(null)
   }
 
@@ -83,6 +100,7 @@ export default function App() {
         <AppHeader />
         <QueryBar
           mode={mode}
+          today={today}
           error={formError}
           onKindChange={onKindChange}
           onModeChange={remember}

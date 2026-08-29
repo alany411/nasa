@@ -31,6 +31,16 @@ export function defaultRange(ceiling = todayInNewYork()): { start: string; end: 
   return { start, end: ceiling }
 }
 
+export function clampRange(
+  range: { start: string; end: string },
+  ceiling = todayInNewYork(),
+): { start: string; end: string } {
+  const end = clampToArchive(range.end, ceiling)
+  const start = clampToArchive(range.start, ceiling)
+  if (compareIsoDates(start, end) > 0) return defaultRange(ceiling)
+  return { start, end }
+}
+
 export function inclusiveDayCount(start: string, end: string): number {
   const startUtc = Date.parse(`${start}T00:00:00Z`)
   const endUtc = Date.parse(`${end}T00:00:00Z`)
