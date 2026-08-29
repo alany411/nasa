@@ -9,9 +9,17 @@ type MediaStageProps = {
   apod: Apod | null
   loading: boolean
   dimmed?: boolean
+  className?: string
+  mediaClassName?: string
 }
 
-export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
+export function MediaStage({
+  apod,
+  loading,
+  dimmed = false,
+  className,
+  mediaClassName,
+}: MediaStageProps) {
   const [mediaFailed, setMediaFailed] = useState(false)
 
   if (loading && !apod) {
@@ -24,7 +32,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
   const poster = apod.thumbnailUrl ?? apod.url
 
   return (
-    <div className={cn('flex flex-col gap-2.5', dimmed && 'opacity-40')}>
+    <div className={cn('flex flex-col gap-2.5', dimmed && 'opacity-40', className)}>
       <div className="relative overflow-hidden rounded-md bg-muted">
         {mediaFailed ? (
           <div className="flex min-h-40 flex-col items-center justify-center gap-1 px-6 py-10 text-center">
@@ -51,7 +59,10 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
             <img
               src={poster}
               alt=""
-              className="mx-auto max-h-[70dvh] w-auto max-w-full object-contain"
+              className={cn(
+                'mx-auto max-h-[70dvh] w-auto max-w-full object-contain',
+                mediaClassName,
+              )}
               onError={() => setMediaFailed(true)}
             />
             <span className="absolute top-4 left-4 rounded-md bg-card px-2.5 py-1 text-xs font-semibold text-primary">
@@ -62,7 +73,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
           <img
             src={apod.url}
             alt={apod.title}
-            className="mx-auto max-h-[70dvh] w-auto max-w-full object-contain"
+            className={cn('mx-auto max-h-[70dvh] w-auto max-w-full object-contain', mediaClassName)}
             onError={() => setMediaFailed(true)}
           />
         )}

@@ -47,7 +47,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
       }}
     >
       <DialogContent
-        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl"
+        className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-3xl md:max-w-5xl lg:max-w-6xl"
         showCloseButton
       >
         {apod ? (
@@ -61,10 +61,18 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                 {slideshow ? ` · ${index + 1} of ${items.length}` : ''}
               </DialogDescription>
             </DialogHeader>
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-              <div className="flex flex-col gap-4">
-                <MediaStage key={`${apod.date}-${apod.url}`} apod={apod} loading={false} />
-                <p className="font-serif text-base leading-7">{apod.explanation}</p>
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:overflow-hidden">
+              <div className="flex flex-col gap-4 md:h-full md:min-h-0 md:flex-row md:items-start md:gap-6">
+                <MediaStage
+                  key={`${apod.date}-${apod.url}`}
+                  apod={apod}
+                  loading={false}
+                  className="min-w-0 md:w-1/2 md:shrink-0"
+                  mediaClassName="md:max-h-[min(56dvh,100%)]"
+                />
+                <p className="min-h-0 font-serif text-base leading-7 md:flex-1 md:overflow-y-auto">
+                  {apod.explanation}
+                </p>
               </div>
             </div>
             <DialogFooter className="mx-0 mb-0 shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
