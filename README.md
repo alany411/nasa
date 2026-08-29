@@ -22,8 +22,8 @@ Copy `.env.example` to `.env` and set `VITE_NASA_API_KEY` to a key from [api.nas
 
 ## Modes
 
-| Control | Domain | URL | Fetch |
-| --- | --- | --- | --- |
-| Day | one APOD | `?date=YYYY-MM-DD` or `/` for Today | live |
-| Range | Window, max 7 days | `?start=&end=` | **Show**, or URL restore |
-| Surprise | Sample, default 6, max 12 | `?count=` | **Surprise me**, or URL restore |
+| Control | Domain | Fetch |
+| --- | --- | --- |
+| Day | one APOD | live |
+| Range | Window, max 7 days | **Show** |
+| Surprise | Sample, default 6, max 12 | **Surprise me** |
