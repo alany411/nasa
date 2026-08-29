@@ -1,4 +1,4 @@
-import { DatePicker } from '@/components/DatePicker'
+import { DatePicker, DateRangePicker } from '@/components/DatePicker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -100,27 +100,18 @@ export function QueryBar({
           {mode.kind === 'range' ? (
             <>
               <div className="flex items-center gap-2">
-                <Label htmlFor="window-start" className="text-xs font-medium text-muted-foreground">
-                  Start
+                <Label htmlFor="range-dates" className="text-xs font-medium text-muted-foreground">
+                  Range
                 </Label>
-                <DatePicker
-                  id="window-start"
-                  value={mode.start}
+                <DateRangePicker
+                  id="range-dates"
+                  start={mode.start}
+                  end={mode.end}
                   max={today}
-                  invalid={error?.field === 'start' || error?.field === 'range'}
-                  onChange={(start) => onModeChange({ ...mode, start })}
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Label htmlFor="window-end" className="text-xs font-medium text-muted-foreground">
-                  End
-                </Label>
-                <DatePicker
-                  id="window-end"
-                  value={mode.end}
-                  max={today}
-                  invalid={error?.field === 'end' || error?.field === 'range'}
-                  onChange={(end) => onModeChange({ ...mode, end })}
+                  invalid={
+                    error?.field === 'start' || error?.field === 'end' || error?.field === 'range'
+                  }
+                  onChange={(range) => onModeChange({ kind: 'range', ...range })}
                 />
               </div>
               <Button type="button" className="rounded-md" onClick={onShowRange}>

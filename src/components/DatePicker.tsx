@@ -1,10 +1,19 @@
 import { useState } from 'react'
 import { CalendarIcon } from 'lucide-react'
+import type { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { ARCHIVE_FLOOR, formatDisplayDate, parseIsoDate, toIsoDate } from '@/lib/today'
+import { RANGE_MAX_DAYS } from '@/lib/mode'
+import {
+  addCalendarDays,
+  ARCHIVE_FLOOR,
+  clampToArchive,
+  formatDisplayDate,
+  parseIsoDate,
+  toIsoDate,
+} from '@/lib/today'
 import { cn } from '@/lib/utils'
 
 type DatePickerProps = {
@@ -65,4 +74,105 @@ export function DatePicker({
       </PopoverContent>
     </Popover>
   )
+}
+
+type DateRangePickerProps = {
+  id: string
+  start: string
+  end: string
+  max: string
+  min?: string
+  invalid?: boolean
+  className?: string
+  onChange: (range: { start: string; end: string }) => void
+}
+
+export function DateRangePicker({
+  id,
+  start,
+  end,
+  max,
+  min = ARCHIVE_FLOOR,
+  invalid = false,
+  className,
+  onChange,
+}: DateRangePickerProps) {
+  const committed = { from: parseIsoDate(start), to: parseIsoDate(end) }
+  const [open, setOpen] = useState(false)
+  const [draft, setDraft] = useState<DateRange | null>(null)
+  const range = draft ?? committed
+  const startMonth = parseIsoDate(min)
+  const endMonth = parseIsoDate(max)
+
+  const label =
+    range.from && range.to
+      ? `${formatShortDate(range.from)} – ${formatShortDate(range.to)}`
+      : range.from
+        ? formatShortDate(range.from)
+        : 'Pick a range'
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        setDraft(next ? committed : null)
+      }}
+    >
+      <PopoverTrigger
+        render={
+          <Button
+            id={id}
+            type="button"
+            variant="outline"
+            aria-invalid={invalid}
+            className={cn('w-[17.5rem] justify-start rounded-md font-normal', className)}
+          />
+        }
+      >
+        <CalendarIcon className="size-4" />
+        {label}
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-auto p-0">
+        <Calendar
+          mode="range"
+          selected={range}
+          defaultMonth={range.from ?? committed.from}
+          numberOfMonths={2}
+          startMonth={startMonth}
+          endMonth={endMonth}
+          disabled={disabledForRange(range, min, max)}
+          captionLayout="dropdown"
+          onSelect={(next) => {
+            const resolved = next ?? committed
+            setDraft(resolved)
+            if (resolved.from && resolved.to) {
+              onChange({ start: toIsoDate(resolved.from), end: toIsoDate(resolved.to) })
+              setOpen(false)
+              setDraft(null)
+            }
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function formatShortDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+function disabledForRange(range: DateRange | undefined, min: string, max: string) {
+  const bounds = { before: parseIsoDate(min), after: parseIsoDate(max) }
+  if (!range?.from || range.to) return bounds
+  const from = toIsoDate(range.from)
+  return [
+    bounds,
+    { before: parseIsoDate(clampToArchive(addCalendarDays(from, 1 - RANGE_MAX_DAYS), max)) },
+    { after: parseIsoDate(clampToArchive(addCalendarDays(from, RANGE_MAX_DAYS - 1), max)) },
+  ]
 }
