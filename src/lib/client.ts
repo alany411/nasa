@@ -7,7 +7,7 @@ import type { DateSpan } from '@/lib/today'
 const apod = ky.create({
   prefix: 'https://api.nasa.gov',
   retry: 0,
-  timeout: 30_000,
+  timeout: 15_000,
 })
 
 type RequestOptions = {
