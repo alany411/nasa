@@ -20,7 +20,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
     return <Skeleton className={cn('w-full rounded-xl', frame)} />
   }
 
-  const thumb = apod.mediaType === 'video' ? (apod.thumbnailUrl ?? apod.url) : apod.url
+  const thumb = apod.mediaType === 'video' ? apod.thumbnailUrl : apod.url
   const kind = apod.mediaType === 'video' ? 'Video' : apod.mediaType === 'image' ? 'Image' : 'Other'
   const KindIcon = apod.mediaType === 'video' ? Video : ImageIcon
   const Title = hero ? 'h1' : 'h2'
@@ -29,12 +29,14 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
     <button
       type="button"
       className={cn(
-        'relative block w-full overflow-hidden rounded-xl text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
+        'relative block w-full overflow-hidden rounded-xl bg-muted text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
         frame,
       )}
       onClick={() => onOpen?.(apod)}
     >
-      <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      {thumb ? (
+        <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      ) : null}
       <div
         className={cn(
           'absolute inset-x-0 top-0 flex flex-col gap-1 bg-gradient-to-b from-black/80 via-black/45 to-transparent',

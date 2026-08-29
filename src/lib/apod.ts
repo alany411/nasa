@@ -22,6 +22,11 @@ export type ApodPayload = {
   copyright?: string
 }
 
+function optionalText(value: string | undefined): string | undefined {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : undefined
+}
+
 export function parseApod(payload: ApodPayload): Apod {
   const mediaType: MediaKind =
     payload.media_type === 'video' ? 'video' : payload.media_type === 'image' ? 'image' : 'other'
@@ -32,8 +37,8 @@ export function parseApod(payload: ApodPayload): Apod {
     explanation: payload.explanation,
     mediaType,
     url: payload.url,
-    hdUrl: payload.hdurl,
-    thumbnailUrl: payload.thumbnail_url,
-    copyright: payload.copyright,
+    hdUrl: optionalText(payload.hdurl),
+    thumbnailUrl: optionalText(payload.thumbnail_url),
+    copyright: optionalText(payload.copyright),
   }
 }

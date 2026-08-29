@@ -29,7 +29,7 @@ export function MediaStage({
   if (!apod) return null
 
   const embed = apod.mediaType === 'video' ? videoEmbedUrl(apod.url) : null
-  const poster = apod.thumbnailUrl ?? apod.url
+  const poster = apod.thumbnailUrl
 
   return (
     <div className={cn('flex min-h-0 flex-col justify-start', dimmed && 'opacity-40', className)}>
@@ -53,23 +53,21 @@ export function MediaStage({
               />
             </div>
           ) : apod.mediaType === 'video' ? (
-            <a
-              href={apod.url}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Open video: ${apod.title}`}
-              className="block"
+            <video
+              src={apod.url}
+              poster={poster}
+              aria-label={apod.title}
+              controls
+              className={cn(
+                'mx-auto max-h-[70dvh] w-auto max-w-full object-contain',
+                mediaClassName,
+              )}
+              onError={() => setMediaFailed(true)}
             >
-              <img
-                src={poster}
-                alt=""
-                className={cn(
-                  'mx-auto max-h-[70dvh] w-auto max-w-full object-contain',
-                  mediaClassName,
-                )}
-                onError={() => setMediaFailed(true)}
-              />
-            </a>
+              <a href={apod.url} target="_blank" rel="noreferrer">
+                Open video: {apod.title}
+              </a>
+            </video>
           ) : (
             <img
               src={apod.url}
