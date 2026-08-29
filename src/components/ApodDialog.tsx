@@ -60,10 +60,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
               <DialogTitle className="font-heading text-2xl leading-tight">
                 {apod.title}
               </DialogTitle>
-              <DialogDescription>
-                {formatDisplayDate(apod.date)}
-                {slideshow ? ` · ${index + 1} of ${items.length}` : ''}
-              </DialogDescription>
+              <DialogDescription>{formatDisplayDate(apod.date)}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:overflow-hidden">
               <div className="flex min-h-0 flex-col gap-4 md:h-full md:flex-row md:items-stretch md:gap-6">
@@ -106,6 +103,12 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     <ChevronLeft data-icon="inline-start" aria-hidden />
                     Previous
                   </Button>
+                  <span
+                    className="min-w-16 text-center text-sm tabular-nums text-muted-foreground"
+                    aria-live="polite"
+                  >
+                    {index + 1} of {items.length}
+                  </span>
                   <Button
                     type="button"
                     className="rounded-md"
