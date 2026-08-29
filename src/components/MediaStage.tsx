@@ -76,9 +76,7 @@ export function MediaStage({
             />
           )}
         </div>
-        <p className="shrink-0 text-xs text-muted-foreground">
-          Copyright · {apod.copyright ?? 'N/A'}
-        </p>
+        <p className="shrink-0 text-xs text-muted-foreground">© {apod.copyright ?? 'N/A'}</p>
       </div>
     </div>
   )
