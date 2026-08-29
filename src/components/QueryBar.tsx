@@ -69,7 +69,6 @@ export function QueryBar({
             <div className="flex items-center gap-2">
               <Button
                 type="button"
-                variant="outline"
                 className="rounded-md"
                 disabled={!canStepPrevious(mode.date)}
                 onClick={onPreviousDay}
@@ -91,7 +90,6 @@ export function QueryBar({
               />
               <Button
                 type="button"
-                variant="outline"
                 className="rounded-md"
                 disabled={!canStepNext(mode.date, today)}
                 onClick={onNextDay}
