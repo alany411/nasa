@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight, Copy, ExternalLink } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { MediaStage } from '@/components/MediaStage'
@@ -82,8 +83,9 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     href={apod.hdUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-8 items-center rounded-md border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-md border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
                   >
+                    <ExternalLink className="size-4" />
                     Open HD
                   </a>
                 ) : null}
@@ -93,6 +95,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                   className="rounded-md"
                   onClick={() => void copyLink()}
                 >
+                  <Copy data-icon="inline-start" />
                   Copy link
                 </Button>
               </div>
@@ -104,6 +107,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     disabled={index === 0}
                     onClick={() => onIndexChange(index - 1)}
                   >
+                    <ChevronLeft data-icon="inline-start" />
                     Previous
                   </Button>
                   <Button
@@ -113,6 +117,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     onClick={() => onIndexChange(index + 1)}
                   >
                     Next
+                    <ChevronRight data-icon="inline-end" />
                   </Button>
                 </div>
               ) : null}

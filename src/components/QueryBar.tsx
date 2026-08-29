@@ -1,3 +1,5 @@
+import { CalendarRange, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+
 import { DatePicker, DateRangePicker } from '@/components/DatePicker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -74,6 +76,7 @@ export function QueryBar({
                 disabled={!canStepPrevious(mode.date)}
                 onClick={onPreviousDay}
               >
+                <ChevronLeft data-icon="inline-start" />
                 Previous
               </Button>
               <Label htmlFor="day-date" className="sr-only">
@@ -93,6 +96,7 @@ export function QueryBar({
                 onClick={onNextDay}
               >
                 Next
+                <ChevronRight data-icon="inline-end" />
               </Button>
             </div>
           ) : null}
@@ -120,6 +124,7 @@ export function QueryBar({
                 disabled={Boolean(error)}
                 onClick={onShowRange}
               >
+                <CalendarRange data-icon="inline-start" />
                 Show
               </Button>
             </>
@@ -153,6 +158,7 @@ export function QueryBar({
                 disabled={Boolean(error)}
                 onClick={onSurprise}
               >
+                <Sparkles data-icon="inline-start" />
                 Surprise
               </Button>
             </>

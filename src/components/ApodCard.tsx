@@ -1,3 +1,5 @@
+import { Info } from 'lucide-react'
+
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Apod } from '@/lib/apod'
 import { formatDisplayDate } from '@/lib/today'
@@ -67,7 +69,8 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
         <p className="min-w-0 truncate text-xs text-white/80">
           Copyright · {apod.copyright ?? 'N/A'}
         </p>
-        <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
+          <Info className="size-3.5" />
           More Info
         </span>
       </div>

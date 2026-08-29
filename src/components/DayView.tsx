@@ -1,3 +1,5 @@
+import { CalendarDays, RotateCw } from 'lucide-react'
+
 import { ApodCard } from '@/components/ApodCard'
 import { Button } from '@/components/ui/button'
 import type { Apod } from '@/lib/apod'
@@ -31,10 +33,12 @@ export function DayView({
         <div className="flex gap-2">
           {error.code === 'not-found' ? (
             <Button type="button" onClick={onBackToToday}>
+              <CalendarDays data-icon="inline-start" />
               Back to Today
             </Button>
           ) : (
             <Button type="button" onClick={onRetry}>
+              <RotateCw data-icon="inline-start" />
               Retry
             </Button>
           )}
