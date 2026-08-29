@@ -1,122 +1,85 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useMemo, useState } from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { AppHeader } from '@/components/AppHeader'
+import { QueryBar } from '@/components/QueryBar'
+import {
+  parseModeFromSearch,
+  rememberedDefaults,
+  searchFromMode,
+  validateMode,
+  type ViewerMode,
+} from '@/lib/mode'
+import { todayInNewYork } from '@/lib/today'
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+function kickerFor(mode: ViewerMode): string {
+  if (mode.kind === 'day') {
+    return 'NASA Astronomy Picture of the Day · Today in America/New_York'
+  }
+  if (mode.kind === 'range') {
+    return 'NASA Astronomy Picture of the Day · A Window of consecutive days'
+  }
+  return 'NASA Astronomy Picture of the Day · A random Sample, not a Window'
 }
 
-export default App
+export default function App() {
+  const today = todayInNewYork()
+  const [mode, setMode] = useState<ViewerMode>(() => parseModeFromSearch(window.location.search, today))
+  const [memory, setMemory] = useState<Record<ViewerMode['kind'], ViewerMode>>(() => {
+    const initial = parseModeFromSearch(window.location.search, today)
+    return {
+      day: initial.kind === 'day' ? initial : rememberedDefaults('day', today),
+      window: initial.kind === 'range' ? initial : rememberedDefaults('range', today),
+      sample: initial.kind === 'surprise' ? initial : rememberedDefaults('surprise', today),
+    }
+  })
+
+  const formError = useMemo(() => validateMode(mode, today), [mode, today])
+
+  function writeUrl(next: ViewerMode) {
+    const nextUrl = `${window.location.pathname}${searchFromMode(next, today)}`
+    window.history.pushState(next, '', nextUrl)
+  }
+
+  function applyMode(next: ViewerMode) {
+    setMode(next)
+    setMemory((current) => ({ ...current, [next.kind]: next }))
+    writeUrl(next)
+  }
+
+  function onKindChange(kind: ViewerMode['kind']) {
+    applyMode(memory[kind] ?? rememberedDefaults(kind, today))
+  }
+
+  useEffect(() => {
+    function onPop() {
+      const next = parseModeFromSearch(window.location.search, today)
+      setMode(next)
+      setMemory((current) => ({ ...current, [next.kind]: next }))
+    }
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [today])
+
+  useEffect(() => {
+    const expected = searchFromMode(mode, today)
+    if (window.location.search !== expected && !window.location.search) {
+      window.history.replaceState(mode, '', `${window.location.pathname}${expected}`)
+    }
+  }, [mode, today])
+
+  return (
+    <div className="min-h-svh bg-background px-4 py-6 md:px-12 md:py-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <AppHeader kicker={kickerFor(mode)} />
+        <QueryBar
+          mode={mode}
+          error={formError}
+          onKindChange={onKindChange}
+          onModeChange={applyMode}
+          onShowRange={() => applyMode(mode)}
+          onSurprise={() => applyMode(mode)}
+        />
+      </div>
+    </div>
+  )
+}
