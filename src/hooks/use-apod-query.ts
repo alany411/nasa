@@ -9,13 +9,18 @@ async function fetchDayOrYesterday(
   date: string,
   today: string,
   remember: (date: string, apod: Apod) => void,
+  signal?: AbortSignal,
 ): Promise<Apod> {
   try {
-    return await fetchDay(date)
+    return await fetchDay(date, { signal })
   } catch (error) {
-    if (date === today && error instanceof ApodRequestError && error.code === 'not-found') {
+    if (
+      date === today &&
+      error instanceof ApodRequestError &&
+      (error.code === 'not-found' || error.code === 'bad-request')
+    ) {
       const yesterday = addCalendarDays(today, -1)
-      const apod = await fetchDay(yesterday)
+      const apod = await fetchDay(yesterday, { signal })
       remember(yesterday, apod)
       return apod
     }
@@ -27,10 +32,15 @@ export function useDayApod(date: string | null, today: string) {
   const queryClient = useQueryClient()
   return useQuery<Apod, ApodRequestError>({
     queryKey: apodKeys.day(date ?? ''),
-    queryFn: () =>
-      fetchDayOrYesterday(date!, today, (resolved, apod) => {
-        queryClient.setQueryData(apodKeys.day(resolved), apod)
-      }),
+    queryFn: ({ signal }) =>
+      fetchDayOrYesterday(
+        date!,
+        today,
+        (resolved, apod) => {
+          queryClient.setQueryData(apodKeys.day(resolved), apod)
+        },
+        signal,
+      ),
     enabled: Boolean(date),
     staleTime: Infinity,
   })
@@ -39,7 +49,7 @@ export function useDayApod(date: string | null, today: string) {
 export function useRangeApods(range: { start: string; end: string }) {
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.range(range.start, range.end),
-    queryFn: () => fetchRange(range.start, range.end),
+    queryFn: ({ signal }) => fetchRange(range.start, range.end, { signal }),
     staleTime: Infinity,
   })
 }
@@ -47,7 +57,7 @@ export function useRangeApods(range: { start: string; end: string }) {
 export function useSurpriseApods(count: number) {
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.surprise(count),
-    queryFn: () => fetchSurprise(count),
+    queryFn: ({ signal }) => fetchSurprise(count, { signal }),
     staleTime: Infinity,
   })
 }
