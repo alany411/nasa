@@ -116,7 +116,6 @@ export default function App() {
             if (mode.kind !== 'range' || formError || rangeQuery.isFetching) return
             setOpened(null)
             setShownRange({ start: mode.start, end: mode.end })
-            void queryClient.resetQueries({ queryKey: apodKeys.range(mode) })
           }}
           onSurprise={() => {
             if (mode.kind !== 'surprise' || formError || surpriseQuery.isFetching) return
