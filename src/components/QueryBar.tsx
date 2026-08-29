@@ -1,4 +1,4 @@
-import { CalendarRange, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
+import { CalendarRange, ChevronLeft, ChevronRight, Loader2, Sparkles } from 'lucide-react'
 
 import { DatePicker, DateRangePicker } from '@/components/DatePicker'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,7 @@ import {
 type QueryBarProps = {
   mode: ViewerMode
   error: FormError | null
+  busy?: boolean
   onKindChange: (kind: ViewerMode['kind']) => void
   onModeChange: (mode: ViewerMode) => void
   onShowRange: () => void
@@ -28,6 +29,7 @@ type QueryBarProps = {
 export function QueryBar({
   mode,
   error,
+  busy = false,
   onKindChange,
   onModeChange,
   onShowRange,
@@ -71,10 +73,15 @@ export function QueryBar({
               <Button
                 type="button"
                 className="rounded-md"
-                disabled={!canStepPrevious(mode.date)}
+                disabled={busy || !canStepPrevious(mode.date)}
+                aria-busy={busy}
                 onClick={onPreviousDay}
               >
-                <ChevronLeft data-icon="inline-start" />
+                {busy ? (
+                  <Loader2 data-icon="inline-start" className="animate-spin" />
+                ) : (
+                  <ChevronLeft data-icon="inline-start" />
+                )}
                 Previous
               </Button>
               <Label htmlFor="day-date" className="sr-only">
@@ -91,11 +98,16 @@ export function QueryBar({
               <Button
                 type="button"
                 className="rounded-md"
-                disabled={!canStepNext(mode.date, today)}
+                disabled={busy || !canStepNext(mode.date, today)}
+                aria-busy={busy}
                 onClick={onNextDay}
               >
                 Next
-                <ChevronRight data-icon="inline-end" />
+                {busy ? (
+                  <Loader2 data-icon="inline-end" className="animate-spin" />
+                ) : (
+                  <ChevronRight data-icon="inline-end" />
+                )}
               </Button>
             </div>
             <FieldError id="day-date-error" message={dateInvalid ? error?.message : undefined} />
@@ -117,18 +129,20 @@ export function QueryBar({
                 describedBy={rangeInvalid ? 'range-error' : undefined}
                 onChange={(range) => onModeChange({ kind: 'range', ...range })}
               />
-              <FieldError
-                id="range-error"
-                message={rangeInvalid ? error?.message : undefined}
-              />
+              <FieldError id="range-error" message={rangeInvalid ? error?.message : undefined} />
             </div>
             <Button
               type="button"
               className="rounded-md"
-              disabled={Boolean(error)}
+              disabled={busy || Boolean(error)}
+              aria-busy={busy}
               onClick={onShowRange}
             >
-              <CalendarRange data-icon="inline-start" />
+              {busy ? (
+                <Loader2 data-icon="inline-start" className="animate-spin" />
+              ) : (
+                <CalendarRange data-icon="inline-start" />
+              )}
               Show
             </Button>
           </>
@@ -138,7 +152,10 @@ export function QueryBar({
           <>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <Label htmlFor="surprise-count" className="text-xs font-medium text-muted-foreground">
+                <Label
+                  htmlFor="surprise-count"
+                  className="text-xs font-medium text-muted-foreground"
+                >
                   Count
                 </Label>
                 <Input
@@ -166,10 +183,15 @@ export function QueryBar({
             <Button
               type="button"
               className="rounded-md"
-              disabled={Boolean(error)}
+              disabled={busy || Boolean(error)}
+              aria-busy={busy}
               onClick={onSurprise}
             >
-              <Sparkles data-icon="inline-start" />
+              {busy ? (
+                <Loader2 data-icon="inline-start" className="animate-spin" />
+              ) : (
+                <Sparkles data-icon="inline-start" />
+              )}
               Surprise
             </Button>
           </>

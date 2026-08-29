@@ -102,26 +102,33 @@ export default function App() {
           mode={mode}
           today={today}
           error={formError}
+          busy={
+            mode.kind === 'day'
+              ? dayQuery.isFetching
+              : mode.kind === 'range'
+                ? rangeQuery.isFetching
+                : surpriseQuery.isFetching
+          }
           onKindChange={onKindChange}
           onModeChange={remember}
           onShowRange={() => {
-            if (mode.kind !== 'range' || formError) return
+            if (mode.kind !== 'range' || formError || rangeQuery.isFetching) return
             setOpened(null)
             setShownRange({ start: mode.start, end: mode.end })
             void queryClient.resetQueries({ queryKey: apodKeys.range(mode.start, mode.end) })
           }}
           onSurprise={() => {
-            if (mode.kind !== 'surprise' || formError) return
+            if (mode.kind !== 'surprise' || formError || surpriseQuery.isFetching) return
             setOpened(null)
             setShownSurprise(mode.count)
             void queryClient.resetQueries({ queryKey: apodKeys.surprise(mode.count) })
           }}
           onPreviousDay={() => {
-            if (mode.kind !== 'day') return
+            if (mode.kind !== 'day' || dayQuery.isFetching) return
             remember({ kind: 'day', date: stepDay(mode.date, -1, today) })
           }}
           onNextDay={() => {
-            if (mode.kind !== 'day') return
+            if (mode.kind !== 'day' || dayQuery.isFetching) return
             remember({ kind: 'day', date: stepDay(mode.date, 1, today) })
           }}
         />
