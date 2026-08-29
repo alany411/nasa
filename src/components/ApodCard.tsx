@@ -65,7 +65,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
       </div>
       <div
         className={cn(
-          'absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 via-black/45 to-transparent',
+          'absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-black/80 via-black/45 to-transparent',
           hero ? 'px-5 pt-16 pb-5 md:px-7 md:pt-20 md:pb-7' : 'px-4 pt-12 pb-4',
         )}
       >
