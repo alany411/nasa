@@ -22,8 +22,8 @@ Copy `.env.example` to `.env` and set `VITE_NASA_API_KEY` to a key from [api.nas
 
 ## Modes
 
-| Control | Domain | Fetch |
-| --- | --- | --- |
-| Day | one APOD | live |
-| Range | Window, max 7 days | **Show** |
-| Surprise | Sample, default 6, max 12 | **Surprise me** |
+| Control  | Domain                    | Fetch                                                     |
+| -------- | ------------------------- | --------------------------------------------------------- |
+| Day      | one APOD                  | live                                                      |
+| Range    | Window, max 7 days        | default Window on first load; **Show** applies a new span |
+| Surprise | Sample, default 6, max 12 | default Sample on first load; **Surprise me** draws again |

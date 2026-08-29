@@ -37,20 +37,18 @@ export function useDayApod(date: string | null, today: string) {
   })
 }
 
-export function useRangeApods(range: { start: string; end: string } | null) {
+export function useRangeApods(range: { start: string; end: string }) {
   return useQuery<Apod[], ApodRequestError>({
-    queryKey: apodKeys.range(range?.start ?? '', range?.end ?? ''),
-    queryFn: () => fetchRange(range!.start, range!.end),
-    enabled: Boolean(range),
+    queryKey: apodKeys.range(range.start, range.end),
+    queryFn: () => fetchRange(range.start, range.end),
     staleTime: Infinity,
   })
 }
 
-export function useSurpriseApods(count: number | null) {
+export function useSurpriseApods(count: number) {
   return useQuery<Apod[], ApodRequestError>({
-    queryKey: apodKeys.surprise(count ?? 0),
-    queryFn: () => fetchSurprise(count!),
-    enabled: count !== null,
+    queryKey: apodKeys.surprise(count),
+    queryFn: () => fetchSurprise(count),
     staleTime: Infinity,
   })
 }

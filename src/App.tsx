@@ -9,9 +9,15 @@ import { SurpriseGrid } from '@/components/SurpriseGrid'
 import { RangeStrip } from '@/components/RangeStrip'
 import type { Apod } from '@/lib/apod'
 import { useDayApod, useSurpriseApods, useRangeApods } from '@/hooks/use-apod-query'
-import { rememberedDefaults, stepDay, validateMode, type ViewerMode } from '@/lib/mode'
+import {
+  rememberedDefaults,
+  SURPRISE_DEFAULT,
+  stepDay,
+  validateMode,
+  type ViewerMode,
+} from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
-import { inclusiveDayCount, todayInNewYork } from '@/lib/today'
+import { defaultRange, inclusiveDayCount, todayInNewYork } from '@/lib/today'
 
 function kickerFor(mode: ViewerMode): string {
   if (mode.kind === 'day') {
@@ -32,8 +38,8 @@ export default function App() {
     range: rememberedDefaults('range', today),
     surprise: rememberedDefaults('surprise', today),
   }))
-  const [shownRange, setShownRange] = useState<{ start: string; end: string } | null>(null)
-  const [shownSurprise, setShownSurprise] = useState<number | null>(null)
+  const [shownRange, setShownRange] = useState(() => defaultRange(today))
+  const [shownSurprise, setShownSurprise] = useState(SURPRISE_DEFAULT)
   const [opened, setOpened] = useState<{ items: Apod[]; index: number } | null>(null)
 
   useEffect(() => {
@@ -46,8 +52,8 @@ export default function App() {
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
   const dayQuery = useDayApod(dayDate, today)
-  const rangeQuery = useRangeApods(mode.kind === 'range' ? shownRange : null)
-  const surpriseQuery = useSurpriseApods(mode.kind === 'surprise' ? shownSurprise : null)
+  const rangeQuery = useRangeApods(shownRange)
+  const surpriseQuery = useSurpriseApods(shownSurprise)
 
   if (mode.kind === 'day' && mode.date === today && dayQuery.data && dayQuery.data.date !== today) {
     const next = { kind: 'day' as const, date: dayQuery.data.date }
@@ -126,27 +132,22 @@ export default function App() {
           />
         ) : null}
 
-        {mode.kind === 'range' && (shownRange || rangeQuery.isFetching) && !formError ? (
+        {mode.kind === 'range' && !formError ? (
           <RangeStrip
-            start={shownRange?.start ?? mode.start}
-            end={shownRange?.end ?? mode.end}
+            start={shownRange.start}
+            end={shownRange.end}
             items={rangeQuery.data ?? []}
             loading={rangeQuery.isFetching}
-            expectedCount={inclusiveDayCount(
-              shownRange?.start ?? mode.start,
-              shownRange?.end ?? mode.end,
-            )}
+            expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
             onOpen={openApod}
           />
         ) : null}
 
-        {mode.kind === 'surprise' &&
-        (shownSurprise !== null || surpriseQuery.isFetching) &&
-        !formError ? (
+        {mode.kind === 'surprise' && !formError ? (
           <SurpriseGrid
             items={surpriseQuery.data ?? []}
             loading={surpriseQuery.isFetching}
-            expectedCount={shownSurprise ?? mode.count}
+            expectedCount={shownSurprise}
             onOpen={openApod}
           />
         ) : null}
