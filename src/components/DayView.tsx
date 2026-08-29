@@ -29,16 +29,18 @@ export function DayView({
   if (error && !apod) {
     return (
       <div className="flex flex-col gap-3">
-        <p className="font-serif text-lg text-foreground">{errorMessage(error)}</p>
+        <p className="font-serif text-lg text-foreground" role="alert">
+          {errorMessage(error)}
+        </p>
         <div className="flex gap-2">
           {error.code === 'not-found' ? (
             <Button type="button" onClick={onBackToToday}>
-              <CalendarDays data-icon="inline-start" />
+              <CalendarDays data-icon="inline-start" aria-hidden />
               Back to Today
             </Button>
           ) : (
             <Button type="button" onClick={onRetry}>
-              <RotateCw data-icon="inline-start" />
+              <RotateCw data-icon="inline-start" aria-hidden />
               Retry
             </Button>
           )}
@@ -48,7 +50,12 @@ export function DayView({
   }
 
   return (
-    <div className={dimmed ? 'opacity-40' : undefined}>
+    <div className={dimmed ? 'opacity-40' : undefined} aria-busy={dimmed || firstLoad || undefined}>
+      {firstLoad ? (
+        <p className="sr-only" role="status">
+          Loading
+        </p>
+      ) : null}
       <ApodCard size="hero" apod={apod ?? undefined} loading={firstLoad} onOpen={onOpen} />
     </div>
   )

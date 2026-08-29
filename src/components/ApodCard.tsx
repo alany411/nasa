@@ -23,11 +23,10 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
   const thumb = apod.mediaType === 'video' ? apod.thumbnailUrl : apod.url
   const kind = apod.mediaType === 'video' ? 'Video' : apod.mediaType === 'image' ? 'Image' : 'Other'
   const KindIcon = apod.mediaType === 'video' ? Video : ImageIcon
-  const Title = hero ? 'h1' : 'h2'
-
   return (
     <button
       type="button"
+      aria-label={`More info: ${apod.title}, ${formatDisplayDate(apod.date)}, ${kind}`}
       className={cn(
         'relative block w-full overflow-hidden rounded-xl bg-muted text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50',
         frame,
@@ -43,14 +42,14 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
           hero ? 'px-5 pt-5 pb-16 md:px-7 md:pt-7 md:pb-20' : 'px-4 pt-4 pb-12',
         )}
       >
-        <Title
+        <span
           className={cn(
             'font-heading text-balance text-white',
             hero ? 'text-3xl leading-tight md:text-5xl' : 'text-lg leading-6',
           )}
         >
           {apod.title}
-        </Title>
+        </span>
         <p
           className={cn(
             'inline-flex items-center gap-1.5 text-white/85',
@@ -60,7 +59,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
           {formatDisplayDate(apod.date)}
           <span aria-hidden>·</span>
           <span className="inline-flex items-center gap-1">
-            <KindIcon className={hero ? 'size-3.5' : 'size-3'} />
+            <KindIcon className={hero ? 'size-3.5' : 'size-3'} aria-hidden />
             {kind}
           </span>
         </p>
@@ -75,7 +74,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
           <p className="min-w-0 truncate text-xs text-white/80">© {apod.copyright}</p>
         ) : null}
         <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
-          <Info className="size-3.5" />
+          <Info className="size-3.5" aria-hidden />
           More Info
         </span>
       </div>

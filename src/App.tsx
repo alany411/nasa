@@ -129,37 +129,49 @@ export default function App() {
           }}
         />
 
-        {mode.kind === 'day' ? (
-          <DayView
-            apod={dayApod}
-            loading={dayLoading}
-            dimmed={dayQuery.isFetching && Boolean(dayApod)}
-            error={dayError}
-            onOpen={(apod) => openApod(apod, [apod])}
-            onRetry={() => {
-              void dayQuery.refetch()
-            }}
-            onBackToToday={() => remember({ kind: 'day', date: today })}
-          />
-        ) : null}
+        <main className="flex flex-col gap-6">
+          {mode.kind === 'day' ? (
+            <DayView
+              apod={dayApod}
+              loading={dayLoading}
+              dimmed={dayQuery.isFetching && Boolean(dayApod)}
+              error={dayError}
+              onOpen={(apod) => openApod(apod, [apod])}
+              onRetry={() => {
+                void dayQuery.refetch()
+              }}
+              onBackToToday={() => remember({ kind: 'day', date: today })}
+            />
+          ) : null}
 
-        {mode.kind === 'range' ? (
-          <RangeStrip
-            items={rangeQuery.data ?? []}
-            loading={rangeQuery.isFetching}
-            expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
-            onOpen={openApod}
-          />
-        ) : null}
+          {mode.kind === 'range' ? (
+            <RangeStrip
+              items={rangeQuery.data ?? []}
+              loading={rangeQuery.isFetching}
+              expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
+              onOpen={openApod}
+            />
+          ) : null}
 
-        {mode.kind === 'surprise' ? (
-          <SurpriseGrid
-            items={surpriseQuery.data ?? []}
-            loading={surpriseQuery.isFetching}
-            expectedCount={shownSurprise}
-            onOpen={openApod}
-          />
-        ) : null}
+          {mode.kind === 'surprise' ? (
+            <SurpriseGrid
+              items={surpriseQuery.data ?? []}
+              loading={surpriseQuery.isFetching}
+              expectedCount={shownSurprise}
+              onOpen={openApod}
+            />
+          ) : null}
+
+          {collectionError && mode.kind !== 'day' ? (
+            <p className="text-sm text-destructive" role="alert">
+              {collectionError.code === 'forbidden'
+                ? 'This API key is not accepted.'
+                : collectionError.code === 'rate-limited'
+                  ? 'NASA is rate-limiting this key. Wait and retry.'
+                  : collectionError.message}
+            </p>
+          ) : null}
+        </main>
 
         <ApodDialog
           items={opened?.items ?? []}
@@ -169,16 +181,6 @@ export default function App() {
           }
           onClose={() => setOpened(null)}
         />
-
-        {collectionError && mode.kind !== 'day' ? (
-          <p className="text-sm text-destructive">
-            {collectionError.code === 'forbidden'
-              ? 'This API key is not accepted.'
-              : collectionError.code === 'rate-limited'
-                ? 'NASA is rate-limiting this key. Wait and retry.'
-                : collectionError.message}
-          </p>
-        ) : null}
       </div>
     </div>
   )

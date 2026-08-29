@@ -100,19 +100,21 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     type="button"
                     className="rounded-md"
                     disabled={index === 0}
+                    aria-label="Previous APOD"
                     onClick={() => onIndexChange(index - 1)}
                   >
-                    <ChevronLeft data-icon="inline-start" />
+                    <ChevronLeft data-icon="inline-start" aria-hidden />
                     Previous
                   </Button>
                   <Button
                     type="button"
                     className="rounded-md"
                     disabled={index === items.length - 1}
+                    aria-label="Next APOD"
                     onClick={() => onIndexChange(index + 1)}
                   >
                     Next
-                    <ChevronRight data-icon="inline-end" />
+                    <ChevronRight data-icon="inline-end" aria-hidden />
                   </Button>
                 </div>
               ) : null}

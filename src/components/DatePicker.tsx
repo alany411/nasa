@@ -65,10 +65,10 @@ export function DatePicker({
           />
         }
       >
-        <CalendarIcon className="size-4" />
+        <CalendarIcon className="size-4" aria-hidden />
         {formatDisplayDate(value)}
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
+      <PopoverContent align="start" aria-label="Choose date" className="w-auto p-0">
         <Calendar
           mode="single"
           required
@@ -94,7 +94,7 @@ export function DatePicker({
               setOpen(false)
             }}
           >
-            <CalendarDays data-icon="inline-start" />
+            <CalendarDays data-icon="inline-start" aria-hidden />
             Today
           </Button>
         </div>
@@ -164,10 +164,10 @@ export function DateRangePicker({
           />
         }
       >
-        <CalendarIcon className="size-4" />
+        <CalendarIcon className="size-4" aria-hidden />
         {label}
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-auto p-0">
+      <PopoverContent align="start" aria-label="Choose date range" className="w-auto p-0">
         <Calendar
           mode="range"
           resetOnSelect

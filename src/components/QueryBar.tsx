@@ -44,8 +44,12 @@ export function QueryBar({
   const countInvalid = error?.field === 'count'
 
   return (
-    <div className="flex flex-col gap-3 rounded-md border border-border bg-card px-3 py-2.5 md:flex-row md:items-start md:justify-between">
+    <nav
+      aria-label="Retrieval"
+      className="flex flex-col gap-3 rounded-md border border-border bg-card px-3 py-2.5 md:flex-row md:items-start md:justify-between"
+    >
       <ToggleGroup
+        aria-label="Mode"
         value={[mode.kind]}
         onValueChange={(values) => {
           const next = values[0]
@@ -75,12 +79,13 @@ export function QueryBar({
                 className="rounded-md"
                 disabled={busy || !canStepPrevious(mode.date)}
                 aria-busy={busy}
+                aria-label="Previous day"
                 onClick={onPreviousDay}
               >
                 {busy ? (
-                  <Loader2 data-icon="inline-start" className="animate-spin" />
+                  <Loader2 data-icon="inline-start" className="animate-spin" aria-hidden />
                 ) : (
-                  <ChevronLeft data-icon="inline-start" />
+                  <ChevronLeft data-icon="inline-start" aria-hidden />
                 )}
                 Previous
               </Button>
@@ -101,13 +106,14 @@ export function QueryBar({
                 className="rounded-md"
                 disabled={busy || !canStepNext(mode.date, today)}
                 aria-busy={busy}
+                aria-label="Next day"
                 onClick={onNextDay}
               >
                 Next
                 {busy ? (
-                  <Loader2 data-icon="inline-end" className="animate-spin" />
+                  <Loader2 data-icon="inline-end" className="animate-spin" aria-hidden />
                 ) : (
-                  <ChevronRight data-icon="inline-end" />
+                  <ChevronRight data-icon="inline-end" aria-hidden />
                 )}
               </Button>
             </div>
@@ -138,12 +144,13 @@ export function QueryBar({
               className="rounded-md"
               disabled={busy || Boolean(error)}
               aria-busy={busy}
+              aria-label="Show range"
               onClick={onShowRange}
             >
               {busy ? (
-                <Loader2 data-icon="inline-start" className="animate-spin" />
+                <Loader2 data-icon="inline-start" className="animate-spin" aria-hidden />
               ) : (
-                <CalendarRange data-icon="inline-start" />
+                <CalendarRange data-icon="inline-start" aria-hidden />
               )}
               Show
             </Button>
@@ -188,19 +195,20 @@ export function QueryBar({
               className="rounded-md"
               disabled={busy || Boolean(error)}
               aria-busy={busy}
+              aria-label="Draw surprise"
               onClick={onSurprise}
             >
               {busy ? (
-                <Loader2 data-icon="inline-start" className="animate-spin" />
+                <Loader2 data-icon="inline-start" className="animate-spin" aria-hidden />
               ) : (
-                <Sparkles data-icon="inline-start" />
+                <Sparkles data-icon="inline-start" aria-hidden />
               )}
               Surprise
             </Button>
           </>
         ) : null}
       </div>
-    </div>
+    </nav>
   )
 }
 
