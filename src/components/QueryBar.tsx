@@ -12,6 +12,7 @@ import {
   type FormError,
   type ViewerMode,
 } from '@/lib/mode'
+import { formatDisplayDate } from '@/lib/today'
 
 type QueryBarProps = {
   mode: ViewerMode
@@ -79,7 +80,7 @@ export function QueryBar({
                 className="rounded-md"
                 disabled={busy || !canStepPrevious(mode.date)}
                 aria-busy={busy}
-                aria-label="Previous day"
+                aria-label={`Previous day, currently ${formatDisplayDate(mode.date)}`}
                 onClick={onPreviousDay}
               >
                 {busy ? (
@@ -106,7 +107,7 @@ export function QueryBar({
                 className="rounded-md"
                 disabled={busy || !canStepNext(mode.date, today)}
                 aria-busy={busy}
-                aria-label="Next day"
+                aria-label={`Next day, currently ${formatDisplayDate(mode.date)}`}
                 onClick={onNextDay}
               >
                 Next
@@ -144,7 +145,7 @@ export function QueryBar({
               className="rounded-md"
               disabled={busy || Boolean(error)}
               aria-busy={busy}
-              aria-label="Show range"
+              aria-label={`Show range from ${formatDisplayDate(mode.start)} to ${formatDisplayDate(mode.end)}`}
               onClick={onShowRange}
             >
               {busy ? (
@@ -195,7 +196,7 @@ export function QueryBar({
               className="rounded-md"
               disabled={busy || Boolean(error)}
               aria-busy={busy}
-              aria-label="Draw surprise"
+              aria-label={`Surprise with ${mode.count}`}
               onClick={onSurprise}
             >
               {busy ? (

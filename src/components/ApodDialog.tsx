@@ -97,7 +97,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     type="button"
                     className="rounded-md"
                     disabled={index === 0}
-                    aria-label="Previous APOD"
+                    aria-label={`Previous, currently ${index + 1} of ${items.length}`}
                     onClick={() => onIndexChange(index - 1)}
                   >
                     <ChevronLeft data-icon="inline-start" aria-hidden />
@@ -113,7 +113,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     type="button"
                     className="rounded-md"
                     disabled={index === items.length - 1}
-                    aria-label="Next APOD"
+                    aria-label={`Next, currently ${index + 1} of ${items.length}`}
                     onClick={() => onIndexChange(index + 1)}
                   >
                     Next
