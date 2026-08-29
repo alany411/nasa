@@ -19,16 +19,6 @@ import {
 import { apodKeys } from '@/lib/query'
 import { defaultRange, inclusiveDayCount, todayInNewYork } from '@/lib/today'
 
-function kickerFor(mode: ViewerMode): string {
-  if (mode.kind === 'day') {
-    return 'NASA Astronomy Picture of the Day · Today in America/New_York'
-  }
-  if (mode.kind === 'range') {
-    return 'NASA Astronomy Picture of the Day · A Window of consecutive days'
-  }
-  return 'NASA Astronomy Picture of the Day · A random Sample, not a Window'
-}
-
 export default function App() {
   const today = todayInNewYork()
   const queryClient = useQueryClient()
@@ -90,7 +80,7 @@ export default function App() {
   return (
     <div className="min-h-svh bg-background px-4 py-6 md:px-12 md:py-8">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <AppHeader kicker={kickerFor(mode)} />
+        <AppHeader />
         <QueryBar
           mode={mode}
           error={formError}
