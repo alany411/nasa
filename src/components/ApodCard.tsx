@@ -52,7 +52,7 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
           <p className="text-white/85">{formatDisplayDate(apod.date)}</p>
           <span
             className={cn(
-              'rounded-full bg-white/20 px-2 py-0.5 font-medium text-white',
+              'rounded-full bg-white px-2 py-0.5 font-medium text-neutral-950',
               hero ? 'text-[11px]' : 'text-[10px]',
             )}
           >
