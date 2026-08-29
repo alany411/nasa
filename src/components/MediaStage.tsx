@@ -82,11 +82,9 @@ export function MediaStage({
             />
           )}
         </div>
-        {apod.copyright ? (
-          <p className="shrink-0 text-xs text-muted-foreground">Copyright · {apod.copyright}</p>
-        ) : apod.mediaType === 'video' ? (
-          <p className="shrink-0 text-xs text-muted-foreground">Video · NASA APOD</p>
-        ) : null}
+        <p className="shrink-0 text-xs text-muted-foreground">
+          Copyright · {apod.copyright ?? 'N/A'}
+        </p>
       </div>
     </div>
   )
