@@ -1,7 +1,8 @@
+import { useState } from 'react'
 import { ImageIcon, Info, Video } from 'lucide-react'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import type { Apod } from '@/lib/apod'
+import { NASA_LOGO_SRC, type Apod } from '@/lib/apod'
 import { formatDisplayDate } from '@/lib/today'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +14,7 @@ type ApodCardProps = {
 }
 
 export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodCardProps) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null)
   const hero = size === 'hero'
   const frame = hero ? 'aspect-[4/5] md:aspect-[16/10] md:min-h-[28rem]' : 'aspect-[3/4]'
 
@@ -20,7 +22,14 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
     return <Skeleton className={cn('w-full rounded-xl', frame)} />
   }
 
-  const thumb = apod.mediaType === 'video' ? apod.thumbnailUrl : apod.url
+  const remoteThumb =
+    apod.mediaType === 'video'
+      ? apod.thumbnailUrl
+      : apod.mediaType === 'image'
+        ? apod.url
+        : undefined
+  const thumb = remoteThumb && failedSrc !== remoteThumb ? remoteThumb : NASA_LOGO_SRC
+  const fallback = thumb === NASA_LOGO_SRC
   const kind = apod.mediaType === 'video' ? 'Video' : apod.mediaType === 'image' ? 'Image' : 'Other'
   const KindIcon = apod.mediaType === 'video' ? Video : ImageIcon
   return (
@@ -33,9 +42,17 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
       )}
       onClick={() => onOpen?.(apod)}
     >
-      {thumb ? (
-        <img src={thumb} alt="" className="absolute inset-0 h-full w-full object-cover" />
-      ) : null}
+      <img
+        src={thumb}
+        alt=""
+        className={cn(
+          'absolute inset-0 m-auto',
+          fallback ? 'h-2/5 w-2/5 object-contain' : 'h-full w-full object-cover',
+        )}
+        onError={() => {
+          if (remoteThumb) setFailedSrc(remoteThumb)
+        }}
+      />
       <div
         className={cn(
           'absolute inset-x-0 top-0 flex flex-col gap-1 bg-gradient-to-b from-black/80 via-black/45 to-transparent',

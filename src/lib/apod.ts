@@ -38,6 +38,8 @@ const nasaApodSchema = v.pipe(
 
 const nasaApodsSchema = v.union([nasaApodSchema, v.array(nasaApodSchema)])
 
+export const NASA_LOGO_SRC = '/nasa-logo.svg'
+
 export type Apod = {
   date: string
   title: string
