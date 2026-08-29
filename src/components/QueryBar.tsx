@@ -153,7 +153,7 @@ export function QueryBar({
                 disabled={Boolean(error)}
                 onClick={onSurprise}
               >
-                Surprise me
+                Surprise
               </Button>
             </>
           ) : null}

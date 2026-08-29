@@ -26,4 +26,4 @@ Copy `.env.example` to `.env` and set `VITE_NASA_API_KEY` to a key from [api.nas
 | -------- | ------------------------ | ----------------------------------------------------------- |
 | Day      | one APOD                 | live                                                        |
 | Range    | consecutive dates, max 7 | default Range on first load; **Show** applies a new span    |
-| Surprise | random set, default 6–12 | default Surprise on first load; **Surprise me** draws again |
+| Surprise | random set, default 6–12 | default Surprise on first load; **Surprise** draws again |
