@@ -2,8 +2,6 @@ import { ApodCard } from '@/components/ApodCard'
 import { Button } from '@/components/ui/button'
 import type { Apod } from '@/lib/apod'
 import type { ApodRequestError } from '@/lib/client'
-import { canStepNext, canStepPrevious } from '@/lib/mode'
-import { formatDisplayDate, todayInNewYork } from '@/lib/today'
 
 type DayViewProps = {
   apod: Apod | null
@@ -11,8 +9,6 @@ type DayViewProps = {
   dimmed: boolean
   error: ApodRequestError | null
   onOpen: (apod: Apod) => void
-  onPrevious: () => void
-  onNext: () => void
   onRetry: () => void
   onBackToToday: () => void
 }
@@ -23,13 +19,9 @@ export function DayView({
   dimmed,
   error,
   onOpen,
-  onPrevious,
-  onNext,
   onBackToToday,
   onRetry,
 }: DayViewProps) {
-  const today = todayInNewYork()
-  const date = apod?.date
   const firstLoad = loading && !apod && !error
 
   if (error && !apod) {
@@ -52,33 +44,8 @@ export function DayView({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          variant="outline"
-          className="rounded-md"
-          disabled={!date || !canStepPrevious(date)}
-          onClick={onPrevious}
-        >
-          Previous
-        </Button>
-        <p className="text-[13px] font-medium text-primary">
-          {date ? formatDisplayDate(date) : formatDisplayDate(today)}
-        </p>
-        <Button
-          type="button"
-          variant="outline"
-          className="rounded-md"
-          disabled={!date || !canStepNext(date, today)}
-          onClick={onNext}
-        >
-          Next
-        </Button>
-      </div>
-      <div className={dimmed ? 'opacity-40' : undefined}>
-        <ApodCard size="hero" apod={apod ?? undefined} loading={firstLoad} onOpen={onOpen} />
-      </div>
+    <div className={dimmed ? 'opacity-40' : undefined}>
+      <ApodCard size="hero" apod={apod ?? undefined} loading={firstLoad} onOpen={onOpen} />
     </div>
   )
 }

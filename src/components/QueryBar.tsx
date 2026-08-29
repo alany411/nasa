@@ -2,7 +2,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { SURPRISE_MAX, type FormError, type ViewerMode } from '@/lib/mode'
+import {
+  canStepNext,
+  canStepPrevious,
+  SURPRISE_MAX,
+  type FormError,
+  type ViewerMode,
+} from '@/lib/mode'
 import { todayInNewYork } from '@/lib/today'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +19,8 @@ type QueryBarProps = {
   onModeChange: (mode: ViewerMode) => void
   onShowRange: () => void
   onSurprise: () => void
+  onPreviousDay: () => void
+  onNextDay: () => void
 }
 
 export function QueryBar({
@@ -22,6 +30,8 @@ export function QueryBar({
   onModeChange,
   onShowRange,
   onSurprise,
+  onPreviousDay,
+  onNextDay,
 }: QueryBarProps) {
   const today = todayInNewYork()
 
@@ -57,6 +67,15 @@ export function QueryBar({
         <div className="flex flex-wrap items-center gap-3">
           {mode.kind === 'day' ? (
             <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md"
+                disabled={!canStepPrevious(mode.date)}
+                onClick={onPreviousDay}
+              >
+                Previous
+              </Button>
               <Label htmlFor="day-date" className="text-xs font-medium text-muted-foreground">
                 Date
               </Label>
@@ -70,6 +89,15 @@ export function QueryBar({
                 className="rounded-md md:w-44"
                 onChange={(event) => onModeChange({ kind: 'day', date: event.target.value })}
               />
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-md"
+                disabled={!canStepNext(mode.date, today)}
+                onClick={onNextDay}
+              >
+                Next
+              </Button>
             </div>
           ) : null}
 

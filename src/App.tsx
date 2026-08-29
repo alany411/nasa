@@ -102,6 +102,14 @@ export default function App() {
             setShownSurprise(mode.count)
             void queryClient.resetQueries({ queryKey: apodKeys.surprise(mode.count) })
           }}
+          onPreviousDay={() => {
+            if (mode.kind !== 'day') return
+            remember({ kind: 'day', date: stepDay(mode.date, -1, today) })
+          }}
+          onNextDay={() => {
+            if (mode.kind !== 'day') return
+            remember({ kind: 'day', date: stepDay(mode.date, 1, today) })
+          }}
         />
 
         {mode.kind === 'day' ? (
@@ -111,14 +119,6 @@ export default function App() {
             dimmed={dayQuery.isFetching && Boolean(dayApod)}
             error={dayError}
             onOpen={(apod) => openApod(apod, [apod])}
-            onPrevious={() => {
-              if (mode.kind !== 'day') return
-              remember({ kind: 'day', date: stepDay(mode.date, -1, today) })
-            }}
-            onNext={() => {
-              if (mode.kind !== 'day') return
-              remember({ kind: 'day', date: stepDay(mode.date, 1, today) })
-            }}
             onRetry={() => {
               void dayQuery.refetch()
             }}
