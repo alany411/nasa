@@ -68,7 +68,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                   apod={apod}
                   loading={false}
                   className="min-h-0 min-w-0 md:h-full md:w-1/2"
-                  mediaClassName="max-h-[min(70dvh,calc(90dvh-12.5rem))]"
+                  mediaClassName="max-h-[min(70dvh,calc(90dvh-14.5rem))]"
                 />
                 <p className="min-h-0 font-serif text-base leading-7 md:h-full md:flex-1 md:overflow-y-auto">
                   {apod.explanation}
