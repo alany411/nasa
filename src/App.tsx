@@ -134,8 +134,6 @@ export default function App() {
 
         {mode.kind === 'range' && !formError ? (
           <RangeStrip
-            start={shownRange.start}
-            end={shownRange.end}
             items={rangeQuery.data ?? []}
             loading={rangeQuery.isFetching}
             expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
