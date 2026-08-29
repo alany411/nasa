@@ -56,7 +56,7 @@ export function QueryBar({
 
         {mode.kind === 'day' ? (
           <div className="flex items-center gap-2">
-            <Label htmlFor="day-date" className="text-muted-foreground text-xs font-medium">
+            <Label htmlFor="day-date" className="text-xs font-medium text-muted-foreground">
               Date
             </Label>
             <Input
@@ -75,7 +75,7 @@ export function QueryBar({
         {mode.kind === 'range' ? (
           <>
             <div className="flex items-center gap-2">
-              <Label htmlFor="window-start" className="text-muted-foreground text-xs font-medium">
+              <Label htmlFor="window-start" className="text-xs font-medium text-muted-foreground">
                 Start
               </Label>
               <Input
@@ -90,7 +90,7 @@ export function QueryBar({
               />
             </div>
             <div className="flex items-center gap-2">
-              <Label htmlFor="window-end" className="text-muted-foreground text-xs font-medium">
+              <Label htmlFor="window-end" className="text-xs font-medium text-muted-foreground">
                 End
               </Label>
               <Input
@@ -113,7 +113,7 @@ export function QueryBar({
         {mode.kind === 'surprise' ? (
           <>
             <div className="flex items-center gap-2">
-              <Label htmlFor="surprise-count" className="text-muted-foreground text-xs font-medium">
+              <Label htmlFor="surprise-count" className="text-xs font-medium text-muted-foreground">
                 Count
               </Label>
               <Input
@@ -139,7 +139,7 @@ export function QueryBar({
         ) : null}
       </div>
 
-      {error ? <p className="text-destructive text-xs">{error.message}</p> : null}
+      {error ? <p className="text-xs text-destructive">{error.message}</p> : null}
     </div>
   )
 }

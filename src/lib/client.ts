@@ -6,11 +6,7 @@ export class ApodRequestError extends Error {
   readonly status: number
   readonly code: 'not-found' | 'forbidden' | 'rate-limited' | 'bad-request' | 'network' | 'unknown'
 
-  constructor(
-    message: string,
-    status: number,
-    code: ApodRequestError['code'],
-  ) {
+  constructor(message: string, status: number, code: ApodRequestError['code']) {
     super(message)
     this.name = 'ApodRequestError'
     this.status = status
