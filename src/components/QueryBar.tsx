@@ -76,7 +76,7 @@ export function QueryBar({
               >
                 Previous
               </Button>
-              <Label htmlFor="day-date" className="text-xs font-medium text-muted-foreground">
+              <Label htmlFor="day-date" className="sr-only">
                 Date
               </Label>
               <DatePicker
@@ -100,7 +100,7 @@ export function QueryBar({
           {mode.kind === 'range' ? (
             <>
               <div className="flex items-center gap-2">
-                <Label htmlFor="range-dates" className="text-xs font-medium text-muted-foreground">
+                <Label htmlFor="range-dates" className="sr-only">
                   Range
                 </Label>
                 <DateRangePicker
