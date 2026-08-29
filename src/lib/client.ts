@@ -26,6 +26,13 @@ export class ApodRequestError extends Error {
   }
 }
 
+export function requestErrorMessage(error: ApodRequestError): string {
+  if (error.code === 'forbidden') return 'This API key is not accepted.'
+  if (error.code === 'rate-limited') return 'NASA is rate-limiting this key. Wait and retry.'
+  if (error.code === 'not-found') return 'No APOD for this date.'
+  return error.message
+}
+
 function apiKey(): string {
   const key = import.meta.env.VITE_NASA_API_KEY
   return typeof key === 'string' && key.trim().length > 0 ? key.trim() : 'DEMO_KEY'

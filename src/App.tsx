@@ -9,6 +9,7 @@ import { SurpriseGrid } from '@/components/SurpriseGrid'
 import { RangeStrip } from '@/components/RangeStrip'
 import type { Apod } from '@/lib/apod'
 import { useDayApod, useSurpriseApods, useRangeApods } from '@/hooks/use-apod-query'
+import { useRequestErrorToast } from '@/hooks/use-request-error-toast'
 import {
   defaultMemory,
   rememberMode,
@@ -44,6 +45,16 @@ export default function App() {
   const dayQuery = useDayApod(dayDate, clockToday)
   const rangeQuery = useRangeApods(shownRange)
   const surpriseQuery = useSurpriseApods(shownSurprise)
+  const activeQuery =
+    mode.kind === 'day' ? dayQuery : mode.kind === 'range' ? rangeQuery : surpriseQuery
+  const requestError =
+    activeQuery.error?.code === 'not-found' && mode.kind === 'day'
+      ? null
+      : (activeQuery.error ?? null)
+
+  useRequestErrorToast(requestError, () => {
+    void activeQuery.refetch()
+  })
 
   if (
     mode.kind === 'day' &&
@@ -83,12 +94,6 @@ export default function App() {
   const dayApod = dayQuery.data ?? null
   const dayError = dayQuery.error ?? null
   const dayLoading = dayQuery.isFetching
-  const collectionError =
-    mode.kind === 'range'
-      ? (rangeQuery.error ?? null)
-      : mode.kind === 'surprise'
-        ? (surpriseQuery.error ?? null)
-        : null
 
   return (
     <div className="min-h-svh bg-background px-4 py-6 md:px-12 md:py-8">
@@ -137,9 +142,6 @@ export default function App() {
               dimmed={dayQuery.isFetching && Boolean(dayApod)}
               error={dayError}
               onOpen={(apod) => openApod(apod, [apod])}
-              onRetry={() => {
-                void dayQuery.refetch()
-              }}
               onBackToToday={() => remember({ kind: 'day', date: today })}
             />
           ) : null}
@@ -147,7 +149,7 @@ export default function App() {
           {mode.kind === 'range' ? (
             <RangeStrip
               items={rangeQuery.data ?? []}
-              loading={rangeQuery.isFetching}
+              loading={rangeQuery.isFetching || (Boolean(rangeQuery.error) && !rangeQuery.data)}
               expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
               onOpen={openApod}
             />
@@ -156,20 +158,12 @@ export default function App() {
           {mode.kind === 'surprise' ? (
             <SurpriseGrid
               items={surpriseQuery.data ?? []}
-              loading={surpriseQuery.isFetching}
+              loading={
+                surpriseQuery.isFetching || (Boolean(surpriseQuery.error) && !surpriseQuery.data)
+              }
               expectedCount={shownSurprise}
               onOpen={openApod}
             />
-          ) : null}
-
-          {collectionError && mode.kind !== 'day' ? (
-            <p className="text-sm text-destructive" role="alert">
-              {collectionError.code === 'forbidden'
-                ? 'This API key is not accepted.'
-                : collectionError.code === 'rate-limited'
-                  ? 'NASA is rate-limiting this key. Wait and retry.'
-                  : collectionError.message}
-            </p>
           ) : null}
         </main>
 
