@@ -1,44 +1,64 @@
-export type MediaKind = 'image' | 'video' | 'other'
+import * as v from 'valibot'
+
+const optionalText = v.pipe(
+  v.optional(v.nullish(v.string())),
+  v.transform((value) => {
+    const trimmed = value?.trim()
+    return trimmed ? trimmed : undefined
+  }),
+)
+
+const nasaApodSchema = v.pipe(
+  v.object({
+    date: v.pipe(v.string(), v.trim(), v.isoDate()),
+    title: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    explanation: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    media_type: v.string(),
+    url: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    hdurl: optionalText,
+    thumbnail_url: optionalText,
+    copyright: optionalText,
+  }),
+  v.transform((payload): Apod => {
+    const base = {
+      date: payload.date,
+      title: payload.title,
+      explanation: payload.explanation,
+      copyright: payload.copyright,
+    }
+    if (payload.media_type === 'video') {
+      return { ...base, mediaType: 'video', url: payload.url, thumbnailUrl: payload.thumbnail_url }
+    }
+    if (payload.media_type === 'image') {
+      return { ...base, mediaType: 'image', url: payload.url, hdUrl: payload.hdurl }
+    }
+    return { ...base, mediaType: 'other', url: payload.url }
+  }),
+)
+
+const nasaApodsSchema = v.union([nasaApodSchema, v.array(nasaApodSchema)])
 
 export type Apod = {
   date: string
   title: string
   explanation: string
-  mediaType: MediaKind
-  url: string
-  hdUrl?: string
-  thumbnailUrl?: string
   copyright?: string
+} & (
+  | { mediaType: 'image'; url: string; hdUrl?: string }
+  | { mediaType: 'video'; url: string; thumbnailUrl?: string }
+  | { mediaType: 'other'; url: string }
+)
+
+export type MediaKind = Apod['mediaType']
+
+export function parseApods(input: unknown): Apod[] {
+  const result = v.safeParse(nasaApodsSchema, input)
+  if (!result.success) throw new Error('NASA returned an unexpected APOD.')
+  return Array.isArray(result.output) ? result.output : [result.output]
 }
 
-export type ApodPayload = {
-  date: string
-  title: string
-  explanation: string
-  media_type: string
-  url: string
-  hdurl?: string
-  thumbnail_url?: string
-  copyright?: string
-}
-
-function optionalText(value: string | undefined): string | undefined {
-  const trimmed = value?.trim()
-  return trimmed ? trimmed : undefined
-}
-
-export function parseApod(payload: ApodPayload): Apod {
-  const mediaType: MediaKind =
-    payload.media_type === 'video' ? 'video' : payload.media_type === 'image' ? 'image' : 'other'
-
-  return {
-    date: payload.date,
-    title: payload.title,
-    explanation: payload.explanation,
-    mediaType,
-    url: payload.url,
-    hdUrl: optionalText(payload.hdurl),
-    thumbnailUrl: optionalText(payload.thumbnail_url),
-    copyright: optionalText(payload.copyright),
-  }
+export function parseApod(input: unknown): Apod {
+  const apod = parseApods(input)[0]
+  if (!apod) throw new Error('NASA returned no APOD.')
+  return apod
 }

@@ -29,7 +29,7 @@ export function MediaStage({
   if (!apod) return null
 
   const embed = apod.mediaType === 'video' ? videoEmbedUrl(apod.url) : null
-  const poster = apod.thumbnailUrl
+  const poster = apod.mediaType === 'video' ? apod.thumbnailUrl : undefined
 
   return (
     <div className={cn('flex min-h-0 flex-col justify-start', dimmed && 'opacity-40', className)}>

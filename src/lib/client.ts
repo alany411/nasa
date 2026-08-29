@@ -1,6 +1,6 @@
 import ky, { isHTTPError, isTimeoutError } from 'ky'
 
-import { parseApod, type Apod, type ApodPayload } from '@/lib/apod'
+import { parseApods, type Apod } from '@/lib/apod'
 
 const apod = ky.create({
   prefix: 'https://api.nasa.gov',
@@ -67,7 +67,7 @@ function isAbortError(error: unknown): boolean {
 async function request(
   searchParams: Record<string, string>,
   options: RequestOptions = {},
-): Promise<ApodPayload | ApodPayload[]> {
+): Promise<unknown> {
   try {
     return await apod
       .get('planetary/apod', {
@@ -78,7 +78,7 @@ async function request(
           thumbs: 'true',
         },
       })
-      .json<ApodPayload | ApodPayload[]>()
+      .json()
   } catch (error) {
     if (isAbortError(error)) throw error
     if (isHTTPError(error)) throw fromHttpError(error)
@@ -89,14 +89,19 @@ async function request(
   }
 }
 
-export async function fetchDay(date: string, options?: RequestOptions): Promise<Apod> {
-  const payload = await request({ date }, options)
-  if (Array.isArray(payload)) {
-    const first = payload[0]
-    if (!first) throw new ApodRequestError('No APOD for this date.', 404, 'not-found')
-    return parseApod(first)
+function readApods(payload: unknown): Apod[] {
+  try {
+    return parseApods(payload)
+  } catch {
+    throw new ApodRequestError('NASA returned an unexpected APOD.', 200, 'unknown')
   }
-  return parseApod(payload)
+}
+
+export async function fetchDay(date: string, options?: RequestOptions): Promise<Apod> {
+  const items = readApods(await request({ date }, options))
+  const first = items[0]
+  if (!first) throw new ApodRequestError('No APOD for this date.', 404, 'not-found')
+  return first
 }
 
 export async function fetchRange(
@@ -104,13 +109,9 @@ export async function fetchRange(
   end: string,
   options?: RequestOptions,
 ): Promise<Apod[]> {
-  const payload = await request({ start_date: start, end_date: end }, options)
-  const items = Array.isArray(payload) ? payload : [payload]
-  return items.map(parseApod)
+  return readApods(await request({ start_date: start, end_date: end }, options))
 }
 
 export async function fetchSurprise(count: number, options?: RequestOptions): Promise<Apod[]> {
-  const payload = await request({ count: String(count) }, options)
-  const items = Array.isArray(payload) ? payload : [payload]
-  return items.map(parseApod)
+  return readApods(await request({ count: String(count) }, options))
 }

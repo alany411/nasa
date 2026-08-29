@@ -78,7 +78,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
             </div>
             <DialogFooter className="mx-0 mb-0 shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap gap-2">
-                {apod.hdUrl ? (
+                {apod.mediaType === 'image' && apod.hdUrl ? (
                   <a
                     href={apod.hdUrl}
                     target="_blank"
