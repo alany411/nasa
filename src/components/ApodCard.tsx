@@ -48,12 +48,14 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
         >
           {apod.title}
         </Title>
-        <div className={cn('flex items-center gap-2', hero ? 'text-sm' : 'text-xs')}>
-          <p className="text-white/85">{formatDisplayDate(apod.date)}</p>
+        <div className="flex items-center gap-2">
+          <span className={cn('leading-none text-white/85', hero ? 'text-sm' : 'text-xs')}>
+            {formatDisplayDate(apod.date)}
+          </span>
           <span
             className={cn(
-              'rounded-full bg-white px-2 py-0.5 font-medium text-neutral-950',
-              hero ? 'text-[11px]' : 'text-[10px]',
+              'inline-flex items-center rounded-full bg-white px-2 leading-none font-medium text-neutral-950',
+              hero ? 'h-5 text-[11px]' : 'h-4 text-[10px]',
             )}
           >
             {kind}
