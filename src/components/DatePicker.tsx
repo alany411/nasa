@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarDays, CalendarIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
@@ -71,6 +71,21 @@ export function DatePicker({
             setOpen(false)
           }}
         />
+        <div className="border-t p-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full rounded-md"
+            disabled={value === max}
+            onClick={() => {
+              onChange(max)
+              setOpen(false)
+            }}
+          >
+            <CalendarDays data-icon="inline-start" />
+            Today
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   )
