@@ -50,7 +50,7 @@ function rangeSchema(today: string) {
       ),
       end: v.pipe(
         v.string(),
-        v.check((end) => compareIsoDates(end, today) <= 0, 'A Window cannot end after Today.'),
+        v.check((end) => compareIsoDates(end, today) <= 0, 'A Range cannot end after Today.'),
       ),
     }),
     v.check(
@@ -59,7 +59,7 @@ function rangeSchema(today: string) {
     ),
     v.check(
       (mode) => inclusiveDayCount(mode.start, mode.end) <= RANGE_MAX_DAYS,
-      `A Window can be at most ${RANGE_MAX_DAYS} days. This span was not requested.`,
+      `A Range can be at most ${RANGE_MAX_DAYS} days.`,
     ),
   )
 }
@@ -70,7 +70,7 @@ const surpriseSchema = v.object({
     v.number(),
     v.integer('Count must be at least 1.'),
     v.minValue(1, 'Count must be at least 1.'),
-    v.maxValue(SURPRISE_MAX, `A Sample can be at most ${SURPRISE_MAX} APODs.`),
+    v.maxValue(SURPRISE_MAX, `Count can be at most ${SURPRISE_MAX}.`),
   ),
 })
 

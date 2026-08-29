@@ -114,7 +114,12 @@ export function QueryBar({
                   onChange={(range) => onModeChange({ kind: 'range', ...range })}
                 />
               </div>
-              <Button type="button" className="rounded-md" onClick={onShowRange}>
+              <Button
+                type="button"
+                className="rounded-md"
+                disabled={Boolean(error)}
+                onClick={onShowRange}
+              >
                 Show
               </Button>
             </>
@@ -142,7 +147,12 @@ export function QueryBar({
                   }
                 />
               </div>
-              <Button type="button" className="rounded-md" onClick={onSurprise}>
+              <Button
+                type="button"
+                className="rounded-md"
+                disabled={Boolean(error)}
+                onClick={onSurprise}
+              >
                 Surprise me
               </Button>
             </>

@@ -122,7 +122,7 @@ export default function App() {
           />
         ) : null}
 
-        {mode.kind === 'range' && !formError ? (
+        {mode.kind === 'range' ? (
           <RangeStrip
             items={rangeQuery.data ?? []}
             loading={rangeQuery.isFetching}
@@ -131,7 +131,7 @@ export default function App() {
           />
         ) : null}
 
-        {mode.kind === 'surprise' && !formError ? (
+        {mode.kind === 'surprise' ? (
           <SurpriseGrid
             items={surpriseQuery.data ?? []}
             loading={surpriseQuery.isFetching}
