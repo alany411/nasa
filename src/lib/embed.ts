@@ -16,12 +16,24 @@ export function videoEmbedUrl(url: string): string | null {
   return null
 }
 
-export function videoOpenLink(url: string): { href: string; label: string } {
+export function videoOpenLink(url: string): { href: string; label: string; ariaLabel: string } {
   const youtube = youtubeId(url)
-  if (youtube) return { href: `https://www.youtube.com/watch?v=${youtube}`, label: 'Open YouTube' }
+  if (youtube) {
+    return {
+      href: `https://www.youtube.com/watch?v=${youtube}`,
+      label: 'YouTube',
+      ariaLabel: 'Open YouTube video in new tab',
+    }
+  }
 
   const vimeo = vimeoId(url)
-  if (vimeo) return { href: `https://vimeo.com/${vimeo}`, label: 'Open Vimeo' }
+  if (vimeo) {
+    return {
+      href: `https://vimeo.com/${vimeo}`,
+      label: 'Vimeo',
+      ariaLabel: 'Open Vimeo video in new tab',
+    }
+  }
 
-  return { href: url, label: 'Open video' }
+  return { href: url, label: 'Video', ariaLabel: 'Open video in new tab' }
 }

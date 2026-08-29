@@ -38,7 +38,7 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
 
   const outbound =
     apod?.mediaType === 'image' && apod.hdUrl
-      ? { href: apod.hdUrl, label: 'Open HD' }
+      ? { href: apod.hdUrl, label: 'HD Image', ariaLabel: 'Open HD image in new tab' }
       : apod?.mediaType === 'video'
         ? videoOpenLink(apod.url)
         : null
@@ -86,9 +86,10 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     href={outbound.href}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={outbound.ariaLabel}
                     className="inline-flex h-8 items-center gap-1.5 rounded-md border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
                   >
-                    <ExternalLink className="size-4" />
+                    <ExternalLink className="size-4" aria-hidden />
                     {outbound.label}
                   </a>
                 ) : null}
