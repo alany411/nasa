@@ -64,7 +64,7 @@ export function DayView({
           <Button
             type="button"
             variant="outline"
-            className="rounded-sm"
+            className="rounded-md"
             disabled={!date || !canStepPrevious(date)}
             onClick={onPrevious}
           >
@@ -76,7 +76,7 @@ export function DayView({
           <Button
             type="button"
             variant="outline"
-            className="rounded-sm"
+            className="rounded-md"
             disabled={!date || !canStepNext(date, today)}
             onClick={onNext}
           >
@@ -103,7 +103,7 @@ export function DayView({
                   href={apod.hdUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-8 items-center rounded-sm border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
+                  className="inline-flex h-8 items-center rounded-md border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
                 >
                   Open HD
                 </a>
@@ -111,7 +111,7 @@ export function DayView({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-sm"
+                className="rounded-md"
                 onClick={() => void copyLink()}
               >
                 Copy link

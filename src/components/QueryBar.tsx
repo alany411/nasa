@@ -28,7 +28,7 @@ export function QueryBar({
   return (
     <div
       className={cn(
-        'flex flex-col gap-2 rounded-sm border bg-card px-3 py-2.5',
+        'flex flex-col gap-2 rounded-md border bg-card px-3 py-2.5',
         error ? 'border-destructive' : 'border-border',
       )}
     >
@@ -43,13 +43,13 @@ export function QueryBar({
           size="sm"
           className="justify-start"
         >
-          <ToggleGroupItem value="day" className="rounded-sm px-3">
+          <ToggleGroupItem value="day" className="rounded-md px-3">
             Day
           </ToggleGroupItem>
-          <ToggleGroupItem value="range" className="rounded-sm px-3">
+          <ToggleGroupItem value="range" className="rounded-md px-3">
             Range
           </ToggleGroupItem>
-          <ToggleGroupItem value="surprise" className="rounded-sm px-3">
+          <ToggleGroupItem value="surprise" className="rounded-md px-3">
             Surprise
           </ToggleGroupItem>
         </ToggleGroup>
@@ -66,7 +66,7 @@ export function QueryBar({
               max={today}
               value={mode.date}
               aria-invalid={error?.field === 'date'}
-              className="rounded-sm md:w-44"
+              className="rounded-md md:w-44"
               onChange={(event) => onModeChange({ kind: 'day', date: event.target.value })}
             />
           </div>
@@ -85,7 +85,7 @@ export function QueryBar({
                 max={today}
                 value={mode.start}
                 aria-invalid={error?.field === 'start' || error?.field === 'range'}
-                className="rounded-sm md:w-40"
+                className="rounded-md md:w-40"
                 onChange={(event) => onModeChange({ ...mode, start: event.target.value })}
               />
             </div>
@@ -100,11 +100,11 @@ export function QueryBar({
                 max={today}
                 value={mode.end}
                 aria-invalid={error?.field === 'end' || error?.field === 'range'}
-                className="rounded-sm md:w-40"
+                className="rounded-md md:w-40"
                 onChange={(event) => onModeChange({ ...mode, end: event.target.value })}
               />
             </div>
-            <Button type="button" className="rounded-sm" onClick={onShowRange}>
+            <Button type="button" className="rounded-md" onClick={onShowRange}>
               Show
             </Button>
           </>
@@ -123,7 +123,7 @@ export function QueryBar({
                 max={SURPRISE_MAX}
                 value={mode.count}
                 aria-invalid={error?.field === 'count'}
-                className="w-20 rounded-sm"
+                className="w-20 rounded-md"
                 onChange={(event) =>
                   onModeChange({
                     kind: 'surprise',
@@ -132,7 +132,7 @@ export function QueryBar({
                 }
               />
             </div>
-            <Button type="button" className="rounded-sm" onClick={onSurprise}>
+            <Button type="button" className="rounded-md" onClick={onSurprise}>
               Surprise me
             </Button>
           </>

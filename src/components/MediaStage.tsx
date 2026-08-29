@@ -15,7 +15,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
   const [mediaFailed, setMediaFailed] = useState(false)
 
   if (loading && !apod) {
-    return <Skeleton className="aspect-[4/3] w-full rounded-sm md:min-h-[28rem]" />
+    return <Skeleton className="aspect-[4/3] w-full rounded-md md:min-h-[28rem]" />
   }
 
   if (!apod) return null
@@ -25,7 +25,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
 
   return (
     <div className={cn('flex flex-col gap-2.5', dimmed && 'opacity-40')}>
-      <div className="relative overflow-hidden rounded-sm bg-muted">
+      <div className="relative overflow-hidden rounded-md bg-muted">
         {mediaFailed ? (
           <div className="flex aspect-[4/3] min-h-60 flex-col items-center justify-center gap-1 px-6 text-center md:min-h-[28rem]">
             <p className="text-sm font-semibold text-primary">Media failed to load</p>
@@ -35,7 +35,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
           </div>
         ) : embed ? (
           <div className="relative aspect-[4/3] md:min-h-[28rem]">
-            <span className="absolute top-4 left-4 z-10 rounded-sm bg-card px-2.5 py-1 text-xs font-semibold tracking-wide text-primary">
+            <span className="absolute top-4 left-4 z-10 rounded-md bg-card px-2.5 py-1 text-xs font-semibold tracking-wide text-primary">
               VIDEO
             </span>
             <iframe
@@ -54,7 +54,7 @@ export function MediaStage({ apod, loading, dimmed = false }: MediaStageProps) {
               className="aspect-[4/3] w-full object-cover md:min-h-[28rem]"
               onError={() => setMediaFailed(true)}
             />
-            <span className="absolute top-4 left-4 rounded-sm bg-card px-2.5 py-1 text-xs font-semibold text-primary">
+            <span className="absolute top-4 left-4 rounded-md bg-card px-2.5 py-1 text-xs font-semibold text-primary">
               VIDEO
             </span>
           </a>
