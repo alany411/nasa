@@ -44,9 +44,6 @@ export function MediaStage({
             </div>
           ) : embed ? (
             <div className={cn('relative aspect-video w-full', mediaClassName)}>
-              <span className="absolute top-4 left-4 z-10 rounded-md bg-card px-2.5 py-1 text-xs font-semibold tracking-wide text-primary">
-                VIDEO
-              </span>
               <iframe
                 title={apod.title}
                 src={embed}
@@ -56,7 +53,7 @@ export function MediaStage({
               />
             </div>
           ) : apod.mediaType === 'video' ? (
-            <a href={apod.url} target="_blank" rel="noreferrer" className="relative block">
+            <a href={apod.url} target="_blank" rel="noreferrer" className="block">
               <img
                 src={poster}
                 alt=""
@@ -66,9 +63,6 @@ export function MediaStage({
                 )}
                 onError={() => setMediaFailed(true)}
               />
-              <span className="absolute top-4 left-4 rounded-md bg-card px-2.5 py-1 text-xs font-semibold text-primary">
-                VIDEO
-              </span>
             </a>
           ) : (
             <img
