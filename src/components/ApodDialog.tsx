@@ -92,7 +92,6 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                 <div className="flex items-center gap-2">
                   <Button
                     type="button"
-                    variant="outline"
                     className="rounded-md"
                     disabled={index === 0}
                     onClick={() => onIndexChange(index - 1)}
@@ -101,7 +100,6 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                   </Button>
                   <Button
                     type="button"
-                    variant="outline"
                     className="rounded-md"
                     disabled={index === items.length - 1}
                     onClick={() => onIndexChange(index + 1)}
