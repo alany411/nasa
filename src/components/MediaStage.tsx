@@ -53,7 +53,13 @@ export function MediaStage({
               />
             </div>
           ) : apod.mediaType === 'video' ? (
-            <a href={apod.url} target="_blank" rel="noreferrer" className="block">
+            <a
+              href={apod.url}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Open video: ${apod.title}`}
+              className="block"
+            >
               <img
                 src={poster}
                 alt=""
