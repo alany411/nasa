@@ -69,8 +69,10 @@ export function ApodCard({ apod, loading = false, size = 'grid', onOpen }: ApodC
           hero ? 'px-5 pt-16 pb-5 md:px-7 md:pt-20 md:pb-7' : 'px-4 pt-12 pb-4',
         )}
       >
-        <p className="min-w-0 truncate text-xs text-white/80">© {apod.copyright ?? 'N/A'}</p>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
+        {apod.copyright ? (
+          <p className="min-w-0 truncate text-xs text-white/80">© {apod.copyright}</p>
+        ) : null}
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-950">
           <Info className="size-3.5" />
           More Info
         </span>
