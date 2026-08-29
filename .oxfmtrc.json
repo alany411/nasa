@@ -2,5 +2,9 @@
   "printWidth": 100,
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "sortTailwindcss": {
+    "stylesheet": "./src/index.css",
+    "functions": ["cn"]
+  }
 }
