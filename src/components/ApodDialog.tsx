@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Copy, ExternalLink } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { MediaStage } from '@/components/MediaStage'
@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { Apod } from '@/lib/apod'
+import { videoOpenLink } from '@/lib/embed'
 import { formatDisplayDate } from '@/lib/today'
 
 type ApodDialogProps = {
@@ -35,10 +36,12 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
     return () => window.removeEventListener('keydown', onKey)
   }, [apod, index, items.length, onIndexChange, slideshow])
 
-  async function copyLink() {
-    if (!apod) return
-    await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}`)
-  }
+  const outbound =
+    apod?.mediaType === 'image' && apod.hdUrl
+      ? { href: apod.hdUrl, label: 'Open HD' }
+      : apod?.mediaType === 'video'
+        ? videoOpenLink(apod.url)
+        : null
 
   return (
     <Dialog
@@ -78,26 +81,17 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
             </div>
             <DialogFooter className="mx-0 mb-0 shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap gap-2">
-                {apod.mediaType === 'image' && apod.hdUrl ? (
+                {outbound ? (
                   <a
-                    href={apod.hdUrl}
+                    href={outbound.href}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex h-8 items-center gap-1.5 rounded-md border border-primary px-2.5 text-sm font-medium text-primary hover:bg-accent"
                   >
                     <ExternalLink className="size-4" />
-                    Open HD
+                    {outbound.label}
                   </a>
                 ) : null}
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="rounded-md"
-                  onClick={() => void copyLink()}
-                >
-                  <Copy data-icon="inline-start" />
-                  Copy link
-                </Button>
               </div>
               {slideshow ? (
                 <div className="flex items-center gap-2">
