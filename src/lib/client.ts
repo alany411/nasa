@@ -33,6 +33,13 @@ export function requestErrorMessage(error: ApodRequestError): string {
   return error.message
 }
 
+export function isUnpublishedTodayError(error: unknown): error is ApodRequestError {
+  return (
+    error instanceof ApodRequestError &&
+    (error.code === 'not-found' || error.code === 'bad-request' || error.status === 500)
+  )
+}
+
 function apiKey(): string {
   const key = import.meta.env.VITE_NASA_API_KEY
   return typeof key === 'string' && key.trim().length > 0 ? key.trim() : 'DEMO_KEY'

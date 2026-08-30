@@ -1,9 +1,15 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import type { Apod } from '@/lib/apod'
-import { ApodRequestError, fetchDay, fetchSurprise, fetchRange } from '@/lib/client'
+import {
+  ApodRequestError,
+  fetchDay,
+  fetchRange,
+  fetchSurprise,
+  isUnpublishedTodayError,
+} from '@/lib/client'
 import { apodKeys } from '@/lib/query'
-import { addCalendarDays, type DateSpan } from '@/lib/today'
+import { addCalendarDays, clampRange, type DateSpan } from '@/lib/today'
 
 async function fetchDayOrYesterday(
   date: string,
@@ -14,17 +20,31 @@ async function fetchDayOrYesterday(
   try {
     return await fetchDay(date, { signal })
   } catch (error) {
-    if (
-      date === today &&
-      error instanceof ApodRequestError &&
-      (error.code === 'not-found' || error.code === 'bad-request')
-    ) {
+    if (date === today && isUnpublishedTodayError(error)) {
       const yesterday = addCalendarDays(today, -1)
       const apod = await fetchDay(yesterday, { signal })
       remember(yesterday, apod)
       return apod
     }
     throw error
+  }
+}
+
+async function fetchRangeOrUntilPublished(
+  range: DateSpan,
+  today: string,
+  remember: (range: DateSpan, items: Apod[]) => void,
+  signal?: AbortSignal,
+): Promise<Apod[]> {
+  try {
+    return await fetchRange(range, { signal })
+  } catch (error) {
+    if (range.end !== today || !isUnpublishedTodayError(error)) throw error
+    const yesterday = addCalendarDays(today, -1)
+    const clamped = clampRange({ start: range.start, end: yesterday }, yesterday)
+    const items = await fetchRange(clamped, { signal })
+    remember(clamped, items)
+    return items
   }
 }
 
@@ -48,10 +68,25 @@ export function useDayApod(date: string | null, today: string) {
   })
 }
 
-export function useRangeApods(range: DateSpan, enabled = true) {
+export function useRangeApods(
+  range: DateSpan,
+  today: string,
+  enabled = true,
+  onClamped?: (range: DateSpan) => void,
+) {
+  const queryClient = useQueryClient()
   return useQuery<Apod[], ApodRequestError>({
     queryKey: apodKeys.range(range),
-    queryFn: ({ signal }) => fetchRange(range, { signal }),
+    queryFn: ({ signal }) =>
+      fetchRangeOrUntilPublished(
+        range,
+        today,
+        (resolved, items) => {
+          queryClient.setQueryData(apodKeys.range(resolved), items)
+          onClamped?.(resolved)
+        },
+        signal,
+      ),
     staleTime: Infinity,
     enabled,
   })

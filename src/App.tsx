@@ -22,7 +22,7 @@ import {
   type ViewerMode,
 } from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
-import { defaultRange, inclusiveDayCount, sameSpan } from '@/lib/today'
+import { defaultRange, inclusiveDayCount, sameSpan, type DateSpan } from '@/lib/today'
 
 export default function App() {
   const today = useNewYorkToday()
@@ -43,7 +43,7 @@ export default function App() {
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
   const dayQuery = useDayApod(dayDate, today)
-  const rangeQuery = useRangeApods(shownRange, mode.kind === 'range')
+  const rangeQuery = useRangeApods(shownRange, today, mode.kind === 'range', applyClampedRange)
   const surpriseQuery = useSurpriseApods(shownSurprise, mode.kind === 'surprise')
   const activeQuery =
     mode.kind === 'day' ? dayQuery : mode.kind === 'range' ? rangeQuery : surpriseQuery
@@ -64,6 +64,12 @@ export default function App() {
     setMemory((current) => rememberMode(current, next))
     setOpened(null)
   }, [dayQuery.data, mode, today])
+
+  function applyClampedRange(range: DateSpan) {
+    setShownRange(range)
+    setMemory((current) => ({ ...current, range: { kind: 'range', ...range } }))
+    setMode((current) => (current.kind === 'range' ? { kind: 'range', ...range } : current))
+  }
 
   function remember(next: ViewerMode) {
     setMode(next)
