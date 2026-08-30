@@ -10,7 +10,6 @@ import { RangeStrip } from '@/components/RangeStrip'
 import type { Apod } from '@/lib/apod'
 import { useDayApod, useSurpriseApods, useRangeApods } from '@/hooks/use-apod-query'
 import { useNewYorkToday } from '@/hooks/use-new-york-today'
-import { useRequestErrorToast } from '@/hooks/use-request-error-toast'
 import {
   defaultMemory,
   rememberMode,
@@ -45,17 +44,6 @@ export default function App() {
   const dayQuery = useDayApod(dayDate, today)
   const rangeQuery = useRangeApods(shownRange, today, mode.kind === 'range', applyClampedRange)
   const surpriseQuery = useSurpriseApods(shownSurprise, mode.kind === 'surprise')
-  const activeQuery =
-    mode.kind === 'day' ? dayQuery : mode.kind === 'range' ? rangeQuery : surpriseQuery
-  const requestError =
-    activeQuery.error?.code === 'not-found' && mode.kind === 'day'
-      ? null
-      : (activeQuery.error ?? null)
-
-  useRequestErrorToast(requestError, () => {
-    void activeQuery.refetch()
-  })
-
   useEffect(() => {
     if (mode.kind !== 'day' || mode.date !== today || !dayQuery.data) return
     if (dayQuery.data.date === today) return
