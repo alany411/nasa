@@ -12,12 +12,13 @@ import {
   type FormError,
   type ViewerMode,
 } from '@/lib/mode'
-import { formatDisplayDate } from '@/lib/today'
+import { formatDisplayDate, sameSpan, type DateSpan } from '@/lib/today'
 
 type QueryBarProps = {
   mode: ViewerMode
   error: FormError | null
   busy?: boolean
+  shownRange: DateSpan
   onKindChange: (kind: ViewerMode['kind']) => void
   onModeChange: (mode: ViewerMode) => void
   onShowRange: () => void
@@ -31,6 +32,7 @@ export function QueryBar({
   mode,
   error,
   busy = false,
+  shownRange,
   onKindChange,
   onModeChange,
   onShowRange,
@@ -143,7 +145,7 @@ export function QueryBar({
             <Button
               type="button"
               className="rounded-md"
-              disabled={busy || Boolean(error)}
+              disabled={busy || Boolean(error) || sameSpan(mode, shownRange)}
               aria-busy={busy}
               aria-label={`Show range from ${formatDisplayDate(mode.start)} to ${formatDisplayDate(mode.end)}`}
               onClick={onShowRange}

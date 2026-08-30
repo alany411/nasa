@@ -36,6 +36,10 @@ export function defaultRange(ceiling = todayInNewYork(), days = RANGE_DEFAULT_DA
   return { start, end: ceiling }
 }
 
+export function sameSpan(a: DateSpan, b: DateSpan): boolean {
+  return a.start === b.start && a.end === b.end
+}
+
 export function clampRange(range: DateSpan, ceiling = todayInNewYork()): DateSpan {
   const end = clampToArchive(range.end, ceiling)
   const start = clampToArchive(range.start, ceiling)

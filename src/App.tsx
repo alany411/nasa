@@ -21,7 +21,7 @@ import {
   type ViewerMode,
 } from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
-import { clampRange, defaultRange, inclusiveDayCount, todayInNewYork } from '@/lib/today'
+import { clampRange, defaultRange, inclusiveDayCount, sameSpan, todayInNewYork } from '@/lib/today'
 
 export default function App() {
   const clockToday = todayInNewYork()
@@ -102,6 +102,7 @@ export default function App() {
         <QueryBar
           mode={mode}
           today={today}
+          shownRange={shownRange}
           error={formError}
           busy={
             mode.kind === 'day'
@@ -113,7 +114,14 @@ export default function App() {
           onKindChange={onKindChange}
           onModeChange={remember}
           onShowRange={() => {
-            if (mode.kind !== 'range' || formError || rangeQuery.isFetching) return
+            if (
+              mode.kind !== 'range' ||
+              formError ||
+              rangeQuery.isFetching ||
+              sameSpan(mode, shownRange)
+            ) {
+              return
+            }
             setOpened(null)
             setShownRange({ start: mode.start, end: mode.end })
           }}
