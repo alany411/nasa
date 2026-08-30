@@ -9,6 +9,7 @@ import { SurpriseGrid } from '@/components/SurpriseGrid'
 import { RangeStrip } from '@/components/RangeStrip'
 import type { Apod } from '@/lib/apod'
 import { useDayApod, useSurpriseApods, useRangeApods } from '@/hooks/use-apod-query'
+import { useNewYorkToday } from '@/hooks/use-new-york-today'
 import { useRequestErrorToast } from '@/hooks/use-request-error-toast'
 import {
   defaultMemory,
@@ -21,15 +22,14 @@ import {
   type ViewerMode,
 } from '@/lib/mode'
 import { apodKeys } from '@/lib/query'
-import { clampRange, defaultRange, inclusiveDayCount, sameSpan, todayInNewYork } from '@/lib/today'
+import { defaultRange, inclusiveDayCount, sameSpan } from '@/lib/today'
 
 export default function App() {
-  const clockToday = todayInNewYork()
+  const today = useNewYorkToday()
   const queryClient = useQueryClient()
-  const [today, setToday] = useState(clockToday)
-  const [mode, setMode] = useState<ViewerMode>(() => rememberedDefaults('day', clockToday))
-  const [memory, setMemory] = useState<ModeMemory>(() => defaultMemory(clockToday))
-  const [shownRange, setShownRange] = useState(() => defaultRange(clockToday))
+  const [mode, setMode] = useState<ViewerMode>(() => rememberedDefaults('day', today))
+  const [memory, setMemory] = useState<ModeMemory>(() => defaultMemory(today))
+  const [shownRange, setShownRange] = useState(() => defaultRange(today))
   const [shownSurprise, setShownSurprise] = useState(SURPRISE_DEFAULT)
   const [opened, setOpened] = useState<{ items: Apod[]; index: number } | null>(null)
 
@@ -42,7 +42,7 @@ export default function App() {
   const formError = validateMode(mode, today)
   const dayDate = mode.kind === 'day' && !formError ? mode.date : null
 
-  const dayQuery = useDayApod(dayDate, clockToday)
+  const dayQuery = useDayApod(dayDate, today)
   const rangeQuery = useRangeApods(shownRange, mode.kind === 'range')
   const surpriseQuery = useSurpriseApods(shownSurprise, mode.kind === 'surprise')
   const activeQuery =
@@ -56,25 +56,14 @@ export default function App() {
     void activeQuery.refetch()
   })
 
-  if (
-    mode.kind === 'day' &&
-    mode.date === clockToday &&
-    dayQuery.data &&
-    dayQuery.data.date !== clockToday
-  ) {
-    const resolved = dayQuery.data.date
-    const next = { kind: 'day' as const, date: resolved }
-    const range = clampRange(memory.range, resolved)
-    setToday(resolved)
+  useEffect(() => {
+    if (mode.kind !== 'day' || mode.date !== today || !dayQuery.data) return
+    if (dayQuery.data.date === today) return
+    const next = { kind: 'day' as const, date: dayQuery.data.date }
     setMode(next)
-    setMemory((current) => ({
-      ...current,
-      day: next,
-      range: { kind: 'range', ...range },
-    }))
-    setShownRange((current) => clampRange(current, resolved))
+    setMemory((current) => rememberMode(current, next))
     setOpened(null)
-  }
+  }, [dayQuery.data, mode, today])
 
   function remember(next: ViewerMode) {
     setMode(next)
