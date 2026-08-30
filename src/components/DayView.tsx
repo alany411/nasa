@@ -1,9 +1,10 @@
 import { CalendarDays } from 'lucide-react'
 
 import { ApodCard } from '@/components/ApodCard'
+import { RequestError } from '@/components/RequestError'
 import { Button } from '@/components/ui/button'
 import type { Apod } from '@/lib/apod'
-import { requestErrorMessage, type ApodRequestError } from '@/lib/client'
+import type { ApodRequestError } from '@/lib/client'
 
 type DayViewProps = {
   apod: Apod | null
@@ -11,25 +12,35 @@ type DayViewProps = {
   dimmed: boolean
   error: ApodRequestError | null
   onOpen: (apod: Apod) => void
+  onRetry: () => void
   onBackToToday: () => void
 }
 
-export function DayView({ apod, loading, dimmed, error, onOpen, onBackToToday }: DayViewProps) {
+export function DayView({
+  apod,
+  loading,
+  dimmed,
+  error,
+  onOpen,
+  onRetry,
+  onBackToToday,
+}: DayViewProps) {
   const firstLoad = loading && !apod && !error
 
-  if (error?.code === 'not-found' && !apod) {
+  if (error && !apod) {
     return (
-      <div className="flex flex-col gap-3">
-        <p className="font-serif text-lg text-foreground" role="alert">
-          {requestErrorMessage(error)}
-        </p>
-        <div className="flex gap-2">
-          <Button type="button" onClick={onBackToToday}>
-            <CalendarDays data-icon="inline-start" aria-hidden />
-            Back to Today
-          </Button>
-        </div>
-      </div>
+      <RequestError
+        error={error}
+        onRetry={error.code === 'not-found' ? undefined : onRetry}
+        extra={
+          error.code === 'not-found' ? (
+            <Button type="button" onClick={onBackToToday}>
+              <CalendarDays data-icon="inline-start" aria-hidden />
+              Back to Today
+            </Button>
+          ) : undefined
+        }
+      />
     )
   }
 

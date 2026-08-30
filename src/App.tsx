@@ -144,6 +144,7 @@ export default function App() {
               dimmed={dayQuery.isFetching && Boolean(dayApod)}
               error={dayError}
               onOpen={(apod) => openApod(apod, [apod])}
+              onRetry={() => void dayQuery.refetch()}
               onBackToToday={() => remember({ kind: 'day', date: today })}
             />
           ) : null}
@@ -151,8 +152,10 @@ export default function App() {
           {mode.kind === 'range' ? (
             <RangeStrip
               items={rangeQuery.data ?? []}
-              loading={rangeQuery.isFetching || (Boolean(rangeQuery.error) && !rangeQuery.data)}
+              loading={rangeQuery.isFetching}
               expectedCount={inclusiveDayCount(shownRange.start, shownRange.end)}
+              error={rangeQuery.error ?? null}
+              onRetry={() => void rangeQuery.refetch()}
               onOpen={openApod}
             />
           ) : null}
@@ -160,10 +163,10 @@ export default function App() {
           {mode.kind === 'surprise' ? (
             <SurpriseGrid
               items={surpriseQuery.data ?? []}
-              loading={
-                surpriseQuery.isFetching || (Boolean(surpriseQuery.error) && !surpriseQuery.data)
-              }
+              loading={surpriseQuery.isFetching}
               expectedCount={shownSurprise}
+              error={surpriseQuery.error ?? null}
+              onRetry={() => void surpriseQuery.refetch()}
               onOpen={openApod}
             />
           ) : null}

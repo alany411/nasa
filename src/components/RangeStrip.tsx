@@ -1,15 +1,34 @@
 import { ApodCard } from '@/components/ApodCard'
+import { RequestError } from '@/components/RequestError'
 import type { Apod } from '@/lib/apod'
+import type { ApodRequestError } from '@/lib/client'
 
 type RangeStripProps = {
   items: Apod[]
   loading: boolean
   expectedCount: number
+  error: ApodRequestError | null
+  onRetry: () => void
   onOpen: (apod: Apod, items: Apod[]) => void
 }
 
-export function RangeStrip({ items, loading, expectedCount, onOpen }: RangeStripProps) {
+export function RangeStrip({
+  items,
+  loading,
+  expectedCount,
+  error,
+  onRetry,
+  onOpen,
+}: RangeStripProps) {
   const placeholders = Array.from({ length: expectedCount }, (_, index) => index)
+
+  if (error && !loading) {
+    return (
+      <section aria-label="Range">
+        <RequestError error={error} onRetry={onRetry} />
+      </section>
+    )
+  }
 
   return (
     <section
