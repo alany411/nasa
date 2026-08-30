@@ -29,6 +29,8 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
   useEffect(() => {
     if (!slideshow || !apod) return
     function onKey(event: KeyboardEvent) {
+      const target = event.target
+      if (target instanceof HTMLElement && target.closest('video, audio')) return
       if (event.key === 'ArrowRight' && index < items.length - 1) onIndexChange(index + 1)
       if (event.key === 'ArrowLeft' && index > 0) onIndexChange(index - 1)
     }
@@ -103,11 +105,11 @@ export function ApodDialog({ items, index, onIndexChange, onClose }: ApodDialogP
                     <ChevronLeft data-icon="inline-start" aria-hidden />
                     Previous
                   </Button>
-                  <span
-                    className="min-w-16 text-center text-sm tabular-nums text-muted-foreground"
-                    aria-live="polite"
-                  >
+                  <span className="min-w-16 text-center text-sm tabular-nums text-muted-foreground">
                     {index + 1} of {items.length}
+                  </span>
+                  <span className="sr-only" aria-live="polite">
+                    {apod.title}, {formatDisplayDate(apod.date)}, {index + 1} of {items.length}
                   </span>
                   <Button
                     type="button"
