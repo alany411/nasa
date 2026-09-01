@@ -12,7 +12,7 @@ const nasaApodSchema = v.pipe(
   v.object({
     date: v.pipe(v.string(), v.trim(), v.isoDate()),
     title: v.pipe(v.string(), v.trim(), v.minLength(1)),
-    explanation: v.pipe(v.string(), v.trim(), v.minLength(1)),
+    explanation: v.pipe(v.string(), v.trim(), v.minLength(0)),
     media_type: v.string(),
     url: v.pipe(v.string(), v.trim(), v.minLength(1)),
     hdurl: optionalText,
